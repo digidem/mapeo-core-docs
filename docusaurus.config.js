@@ -7,7 +7,7 @@ module.exports = {
   tagline: 'The decentralized geo-database that powers Mapeo',
   url: 'https://core.mapeo.app',
   baseUrl: '/',
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'digidem', // Usually your GitHub org/user name.
