@@ -3,32 +3,44 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
-  url: 'https://your-docusaurus-test-site.com',
+  title: 'Mapeo Core',
+  tagline: 'The decentralized geo-database that powers Mapeo',
+  url: 'https://core.mapeo.app',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'digidem', // Usually your GitHub org/user name.
+  projectName: 'mapeo-core-docs', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'My Site',
+      title: 'Mapeo Core',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Mapeo Core Logo',
         src: 'img/logo.svg',
       },
       items: [
         {
           type: 'doc',
-          docId: 'intro',
+          docId: 'getting-started/intro',
           position: 'left',
-          label: 'Tutorial',
+          label: 'Getting Started',
+        },
+        {
+          type: 'doc',
+          docId: 'concepts/overview/what',
+          position: 'left',
+          label: 'Concepts',
+        },
+        {
+          type: 'doc',
+          docId: 'reference/reference',
+          position: 'left',
+          label: 'Reference',
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/digidem/mapeo-core',
           label: 'GitHub',
           position: 'right',
         },
