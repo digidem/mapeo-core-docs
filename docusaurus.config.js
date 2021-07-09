@@ -3,7 +3,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: 'Mapeo Core',
+  title: 'MAPEO Core',
   tagline: 'The decentralized geo-database that powers Mapeo',
   url: 'https://core.mapeo.app',
   baseUrl: '/',
@@ -14,18 +14,12 @@ module.exports = {
   projectName: 'mapeo-core-docs', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'Mapeo Core',
+      title: 'MAPEO Core',
       logo: {
-        alt: 'Mapeo Core Logo',
-        src: 'img/logo.svg',
+        alt: 'MAPEO Core Logo',
+        src: 'img/logo@2x.png',
       },
       items: [
-        {
-          type: 'doc',
-          docId: 'getting-started/intro',
-          position: 'left',
-          label: 'Getting Started',
-        },
         {
           type: 'doc',
           docId: 'concepts/overview/what',
@@ -38,7 +32,6 @@ module.exports = {
           position: 'left',
           label: 'Reference',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/digidem/mapeo-core',
           label: 'GitHub',
@@ -53,8 +46,12 @@ module.exports = {
           title: 'Docs',
           items: [
             {
-              label: 'Tutorial',
-              to: '/docs/intro',
+              label: 'Concepts',
+              to: '/docs/concepts/overview/what',
+            },
+            {
+              label: 'Concepts',
+              to: '/docs/concepts',
             },
           ],
         },
@@ -62,16 +59,12 @@ module.exports = {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
               label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
+              href: 'https://discordapp.com/',
             },
             {
               label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
+              href: 'https://twitter.com/mapeoapp',
             },
           ],
         },
@@ -79,17 +72,13 @@ module.exports = {
           title: 'More',
           items: [
             {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              href: 'https://github.com/digidem/mapeo-core',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Digital Democracy, Built with Docusaurus.`,
     },
     prism: {
       theme: lightCodeTheme,
@@ -104,13 +93,7 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/',
-        },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/blog/',
+            'https://github.com/digidem/mapeo-core-docs/edit/main/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
