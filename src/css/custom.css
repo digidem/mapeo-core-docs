@@ -15,6 +15,8 @@
   --ifm-color-primary-lighter: rgb(102, 212, 189);
   --ifm-color-primary-lightest: rgb(146, 224, 208);
   --ifm-code-font-size: 95%;
+
+  @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@500&display=swap');
 }
 
 .docusaurus-highlight-code-line {
@@ -26,4 +28,11 @@
 
 html[data-theme='dark'] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
+}
+
+.navbar__title {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 500;
+  font-size: 1.4em;
+  margin-left: 0.1em;
 }
