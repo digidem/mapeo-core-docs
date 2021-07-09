@@ -3,20 +3,21 @@ title: Common properties
 sidebar_position: 1
 ---
 
-These properties are shared by all objects in the Mapeo database.
+These properties are shared by all objects in the Mapeo database. They are managed by the database engine and cannot be assigned by the client, with the exception of `links` when updating a record. Create and Update operations operate on the `value` property, which has a different schema for each Mapeo record type.
 
 | Property                        | Type       | Required     | Nullable |
 | ------------------------------- | ---------- | ------------ | -------- |
-| [created_at](#created_at)       | `string`   | **Required** | No       | common (this schema) |
-| [deviceId](#deviceid)           | `string`   | Optional     | No       | common (this schema) |
-| [id](#id)                       | `string`   | **Required** | No       | common (this schema) |
-| [links](#links)                 | `string[]` | Optional     | No       | common (this schema) |
-| [schemaVersion](#schemaversion) | `number`   | Optional     | No       | common (this schema) |
-| [timestamp](#timestamp)         | `string`   | Optional     | No       | common (this schema) |
-| [type](#type)                   | `string`   | **Required** | No       | common (this schema) |
-| [userId](#userid)               | `string`   | Optional     | No       | common (this schema) |
-| [version](#version)             | `string`   | **Required** | No       | common (this schema) |
-| `*`                             | any        | Additional   | Yes      | this schema _allows_ additional properties |
+| [created_at](#created_at)       | `string`   | **Required** | No       |
+| [deviceId](#deviceid)           | `string`   | Optional     | No       |
+| [creatorId](#creatorId)         | `string`   | Optional     | No       |
+| [id](#id)                       | `string`   | **Required** | No       |
+| [links](#links)                 | `string[]` | Optional     | No       |
+| [schemaVersion](#schemaversion) | `number`   | Optional     | No       |
+| [timestamp](#timestamp)         | `string`   | Optional     | No       |
+| [type](#type)                   | `string`   | **Required** | No       |
+| [version](#version)             | `string`   | **Required** | No       |
+| [value](#value)                 | `Object`   | **Required** | No       |
+| `*`                             | any        | Additional   | Yes      |
 
 ## `created_at`
 
@@ -30,6 +31,17 @@ RFC3339-formatted datetime of when the first version of the element was created
 ## `deviceId`
 
 ID of the device that made this edit
+
+- is optional
+- type: `string`
+
+## `creatorId`
+
+:::info
+Not yet implemented
+:::
+
+ID of the device that originally created this record
 
 - is optional
 - type: `string`
@@ -74,17 +86,6 @@ RFC3339-formatted datetime of when this version of the element was created
 enum that defines the type of document in the database (defines which schema should be used)
 
 - is **required**
-- type: `string`
-
-## `userId`
-
-:::info
-Not yet implemented
-:::
-
-ID of the user who made this edit
-
-- is optional
 - type: `string`
 
 ## `version`
