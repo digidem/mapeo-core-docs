@@ -12,7 +12,8 @@
 
 - [Methods](#methods)
 
-  - [`getAll`](#getall)
+  - [`get`](#get)
+  - [`getMany`](#getmany)
   - [`create`](#create)
   - [`update`](#update)
   - [`delete`](#delete)
@@ -70,15 +71,29 @@ type ProjectMember = {
 
 ## Methods
 
-### `getAll`
+### `get`
 
-`() => Promise<Project[]>`
+`(id: string) => Promise<Project[]>`
+
+Get information about a project with the specified `id`.
+
+```ts
+const projects = await mapeo.$projectsManagement.get("abc123");
+```
+
+### `getMany`
+
+`(opts?: {}) => Promise<Project[]>`
 
 Get all projects.
 
 ```ts
-const projects = await mapeo.$projectsManagement.getAll();
+const projects = await mapeo.$projectsManagement.getMany();
 ```
+
+**_TODO: What does `opts` look like?_**
+
+**_TODO: Should return type be different?_**
 
 ### `create`
 
