@@ -1,9 +1,9 @@
 # Sync API
 
-## Table Contents
+## Table of Contents
 
 - [Description](#description)
-- [Ongoing Questions](#ongoing-questions)
+
 - [Types](#types)
 
   - [`ConnectionType`](#connectiontype)
@@ -22,10 +22,6 @@
 ## Description
 
 Provides an imperative API for managing project discovery and sync strategies.
-
-## Ongoing Questions
-
-- Consider removing the `$` namespace prefix
 
 ## Types
 
