@@ -14,14 +14,6 @@
 
   - [`info`](#info)
 
-    - [`info.get`](#infoget)
-    - [`info.update`](#infoupdate)
-
-  - [`invite`](#invite)
-
-    - [`invite.create`](#invitecreate)
-    - [`invite.getMany`](#invitegetmany`)
-
   - [`member`](#member)
 
     - [`member.get`](#memberget)
@@ -30,7 +22,13 @@
     - [`member.remove`](#memberremove)
     - [`member.update`](#memberupdate)
 
+  - [`invite`](#invite)
+
+    - [`invite.create`](#invitecreate)
+    - [`invite.getMany`](#invitegetmany`)
+
 - [Events](#events)
+
   - [`'invite:accepted'`](#inviteaccepted)
   - [`'invite:declined'`](#invitedeclined)
 
@@ -80,31 +78,13 @@ type ProjectMember = {
 
 ### `info`
 
-Interface for project-specific information.
-
-#### `info.get`
-
 `() => Promise<Project>`
 
 Get information about the current project.
 
 ```ts
-const project = await mapeo.$project.info.get();
+const projectInfo = await mapeo.$project.info();
 ```
-
-#### `info.update`
-
-`(info: {}) => Promise<Project>`
-
-Update information about the project. Throws if caller does not have the proper permissions.
-
-```ts
-const project = await mapeo.$project.info.get()
-
-const updatedProject = await mapeo.$project.info.update({...})
-```
-
-**_TODO: What project info can be updated?_**
 
 ### `member`
 
