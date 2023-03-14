@@ -3,7 +3,7 @@
 ## Table of Contents
 
 - [Description](#description)
-- [Ongoing Questions](#ongoing-questions)
+
 - [Types](#types)
 
   - [`MapeoDoc`](#mapeodoc)
@@ -75,8 +75,6 @@ const mapeo = createClient({
 // Now you can use the CRUD methods with the
 // mapeo.observation and mapeo.preset namespaces!
 ```
-
-## Ongoing questions
 
 ## Types
 
