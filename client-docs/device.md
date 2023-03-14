@@ -1,9 +1,9 @@
 # Device API
 
-## Table Contents
+## Table of Contents
 
 - [Description](#description)
-- [Ongoing Questions](#ongoing-questions)
+
 - [Types](#types)
 
   - [`DeviceInfo`](#deviceinfo)
@@ -12,8 +12,8 @@
 
 - [Methods](#methods)
 
-  - [`getById`](#getbyid)
-  - [`getAll`](#getall)
+  - [`getById`](#get)
+  - [`getMany`](#getMany)
 
 - [Events](#events)
   - [`'connect'`](#connect)
@@ -24,12 +24,6 @@
 ## Description
 
 Exposes interface for getting information about discovered devices and subscribing to device info and sync state changes.
-
-## Ongoing questions
-
-- Consider removing `$` prefix for namespace
-- Use consistent wording to describe a device e.g. device vs peer
-- Should the some of the events be less granular i.e. return the overall state as opposed to per peer? For example, instead of providing separate `'connect'` and `'disconnect'` events, provide a more general event like `'connections:update'` with a payload of `infos: DeviceInfo[]`
 
 ## Types
 
@@ -97,27 +91,29 @@ type SyncState = {
 
 ## Methods
 
-### `getById`
+### `get`
 
 `(id: string) => Promise<DeviceInfo | null>`
 
 Retrieve info about a discovered device with the provided `id`.
 
 ```ts
-const device = mapeo.$device.getById("abc123");
+const device = mapeo.$device.get("abc123");
 ```
 
-### `getAll`
+### `getMany`
 
-`() => Promise<DeviceInfo[]>`
+`(opts?: {}) => Promise<DeviceInfo[]>`
 
-Get all discovered devices.
+Get all discovered devices. Can use `opts` to filter the results.
 
 ```ts
 const devices = await mapeo.$device.getAll();
 ```
 
 **_TODO: Is the description of this method accurate?_**
+
+**_TODO: What does `opts` look like?_**
 
 ## Events
 
