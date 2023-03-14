@@ -34,7 +34,7 @@
 
 ## Description
 
-Exposes an interface for managing a project's information, members, and invites.
+Exposes an interface for managing a projects' members and invites.
 
 ## Types
 
