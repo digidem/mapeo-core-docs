@@ -11,13 +11,16 @@
 
 - [Methods](#methods)
 
-  - [`start`](#start)
-  - [`stop`](#stop)
   - [`info`](#info)
-  - [`enableDiscovery`](#enablediscovery)
-  - [`disableDiscovery`](#disablediscovery)
-  - [`enableSync`](#enablesync)
-  - [`disableSync`](#disablesync)
+  - [`setDiscovery`](#setdiscovery)
+  - [`setSync`](#setsync)
+
+- [Events](#events)
+
+  - [`'discovery:start'`](#discoverystart)
+  - [`'discovery:stop'`](#discoverystop)
+  - [`'sync:start'`](#syncstart)
+  - [`'sync:stop'`](#syncstop)
 
 ## Description
 
@@ -46,38 +49,6 @@ type SyncInfo = {
 
 ## Methods
 
-### `start`
-
-`(opts: {}) => Promise<void>`
-
-Start broadcasting to peers.
-
-```ts
-// Start listening and broadcasting to other devices
-await mapeo.$sync.start({ ... })
-```
-
-**_TODO: What opts are relevant?_**
-
-**_TODO: Is it useful to return info about the subscription? (similar to `.info` return value)_**
-
-### `stop`
-
-`(opts: {}) => Promise<void>`
-
-Stop broadcasting to peers.
-
-```ts
-// Start listening and broadcasting to other devices
-await mapeo.$sync.start({ ... })
-
-// Stop listening and broadcasting
-await mapeo.$sync.stop({ ... })
-```
-
-**_TODO: Any relevant opts?_**
-**_TODO: Does it need to return anything?_**
-
 ### `info`
 
 `() => Promise<SyncInfo>`
@@ -94,86 +65,90 @@ await mapeo.$sync.enableDiscovery(["internet", "lan"]);
 console.log(await mapeo.$sync.info());
 ```
 
-### `enableDiscovery`
+### `setDiscovery`
 
-`(connectionTypes: ConnectionType[]) => Promise<void>`
+`(connectionTypes: ConnectionType[] | null) => Promise<void>`
 
-Update the discovery connection types to enable.
+Set the discovery connection types to enable. If `setDiscovery` has not been previously called with a valid connection type, discovery becomes enabled. If `connectionTypes` is `null` or `[]`, discovery becomes disabled. Do not rely on the resolving of this method to know when the process starts or stops. Instead, listen to the `'discovery:start'` and `'discovery:stop'` events.
 
-```ts
-// Enable discovery using only internet
-await mapeo.$sync.enableDiscovery(["internet"]);
-
-console.log(await mapeo.$sync.info().discovery); // logs ["internet"]
-
-// Enable both internet and lan discovery
-await mapeo.$sync.enableDiscovery(["lan"]);
-
-console.log(await mapeo.$sync.info().discovery); // logs ["internet", "lan"]
-```
-
-**_TODO: Should `connectionTypes` override or merge existing value?_**
-
-### `disableDiscovery`
-
-`(connectionTypes: ConnectionType[]) => Promise<void>`
-
-Update the discovery connection types to disable.
+Note that there existing syncing processes with other peers happening, disabling discovery does not disable these immediately. Use `setSync` to handle this more explicitly.
 
 ```ts
-// Enable discovery using both internet and lan
-await mapeo.$sync.enableDiscovery(["internet", "lan"]);
+// Enable discovery
+await mapeo.$sync.setDiscovery(["internet", "lan"]);
 
-console.log(await mapeo.$sync.info().discovery); // logs ["internet", "lan"]
+// Only enable LAN discovery
+await mapeo.$sync.setDiscovery(["lan"]);
 
-// Disable lan discovery
-await mapeo.$sync.disableDiscovery(["lan"]);
-
-console.log(await mapeo.$sync.info().discovery); // logs ["internet"]
+// Disable discovery
+await mapeo.$sync.setDiscovery(null);
 ```
 
-**_TODO: Should `connectionTypes` override or merge existing value?_**
+### `setSync`
 
-**_TODO: What happens to sync when you completely disable discovery?_**
+`(connectionTypes: ConnectionType[] | null) => Promise<void>`
 
-### `enableSync`
+Set the sync connection types to enable. If `setSync` has not been previously called with a valid connection type, sync becomes enabled. If `connectionTypes` is `null` or `[]`, sync becomes disabled. Do not rely on the resolving of this method to know when the process starts or stops. Instead, listen to the `'sync:start'` and `'sync:stop'` events.
 
-`(connectionTypes: ConnectionType[]) => Promise<void>`
-
-Update the sync connection types to enable.
+Note that there existing syncing processes with other peers happening, disabling sync does not close these immediately. The server will attempt to gracefully finish or close them and eventually emit the `'sync:stop'` event.
 
 ```ts
-// Enable sync using only internet for sync
-await mapeo.$sync.enableSync(["internet"]);
+// Enable sync
+await mapeo.$sync.setSync(["internet", "lan"]);
 
-console.log(await mapeo.$sync.info().sync); // logs ["internet"]
+// Only enable LAN sync
+await mapeo.$sync.setSync(["lan"]);
 
-// Enable both internet and lan sync
-await mapeo.$sync.enableSync(["lan"]);
-
-console.log(await mapeo.$sync.info().sync); // logs ["internet", "lan"]
+// Disable sync
+await mapeo.$sync.setSync(null);
 ```
 
-**_TODO: Should `connectionTypes` override or merge existing value?_**
+## Events
 
-**_TODO: What happens when `enableDiscovery` hasn't been called yet?_**
+### `'discovery:start'`
 
-### `disableSync`
+`() => void`
 
-`(connectionTypes: ConnectionType[]) => Promise<void>`
-
-Update the sync connection types to disable.
+Emits when discovery is enabled.
 
 ```ts
-// Enable sync using both internet and lan
-await mapeo.$sync.enableSync(["internet", "lan"]);
-
-console.log(await mapeo.$sync.info().sync); // logs ["internet", "lan"]
-
-// Disable lan sync
-await mapeo.$sync.disableSync(["lan"]);
-
-console.log(await mapeo.$sync.info().sync); // logs ["internet"]
+mapeo.$sync.on("discovery:start", () => {
+  console.log("Now seeking new peers");
+});
 ```
 
-**_TODO: Should `connectionTypes` override or merge existing value?_**
+### `'discovery:stop'`
+
+`() => void`
+
+Emits when discovery is disabled.
+
+```ts
+mapeo.$sync.on("discovery:stop", () => {
+  console.log("No longer seeking new peers");
+});
+```
+
+### `'sync:start'`
+
+`() => void`
+
+Emits when sync is enabled.
+
+```ts
+mapeo.$sync.on("sync:start", () => {
+  console.log("Now allowing sync");
+});
+```
+
+### `'sync:stop'`
+
+`() => void`
+
+Emits when sync is disabled.
+
+```ts
+mapeo.$sync.on("sync:stop", () => {
+  console.log("No longer allowing sync");
+});
+```
