@@ -22,65 +22,13 @@
 
 A DataType represents application-specific data. Each DataType has a schema that it adheres to, which can be used on the application level as well as for querying purposes at the core level. This API provides a CRUD interface to manage and work with such data.
 
-A DataType can be defined when instantiating the client using an object that maps to the corresponding JSON schema. For example:
-
-```ts
-import { createClient } from "mapeo-core-client";
-
-// Can alternatively use any library that generates a valid JSON schema
-const ObservationSchema = {
-  $schema: "http://json-schema.org/draft-07/schema#",
-  $id: "http://mapeo.world/schemas/observation.json",
-  title: "Observation",
-  type: "object",
-  additionalProperties: false,
-  properties: {
-    lat: { type: "number" },
-    lon: { type: "number" },
-    tags: {
-      type: "object",
-      properties: {},
-      additionalProperties: true,
-    },
-  },
-};
-
-const PresetSchema = {
-  $schema: "http://json-schema.org/draft-07/schema#",
-  $id: "http://mapeo.world/schemas/preset.json",
-  title: "Preset",
-  type: "object",
-  additionalProperties: false,
-  properties: {
-    name: { type: "string" },
-    fields: {
-      type: "array",
-      items: { type: "string" },
-    },
-    tags: {
-      type: "object",
-      properties: {},
-      additionalProperties: true,
-    },
-  },
-};
-
-const mapeo = createClient({
-  dataTypes: {
-    observation: ObservationSchema,
-    preset: PresetSchema,
-  },
-});
-
-// Now you can use the CRUD methods with the
-// mapeo.observation and mapeo.preset namespaces!
-```
+For now, exposed DataTypes are determined by the server-implementation that uses Mapeo Core. In the future, we would like to support application-defined DataTypes to flexibly support a wide variety of applications.
 
 ## Types
 
 ### `MapeoDoc`
 
-Basically represents the entity that’s stored in the database. Has information about the specific application data in its `value` field, as well as some meta information about the [`Doc`](https://github.com/digidem/mapeo-core-next/blob/main/lib/types.js#L90) as top level fields, such as `id`, `version`, `deleted`, `links`, `forks`, `created_at`, and `updated_at`.
+Basically represents the entity that is stored in the database. Has information about the specific application data in its `value` field, as well as some meta information about the [`Doc`](https://github.com/digidem/mapeo-core-next/blob/main/lib/types.js#L90) as top level fields, such as `id`, `version`, `deleted`, `links`, `forks`, `created_at`, and `updated_at`.
 
 ### `MapeoType`
 
@@ -115,9 +63,9 @@ console.log(doc.value); // prints { lat: 0, lon: 0, tags: { type: "animal" } }
 
 ### `getByDocId`
 
-`(docId: string, opts?: { deleted?: boolean }) => Promise<MapeoDoc<MapeoType>>`
+`(docId: string) => Promise<MapeoDoc<MapeoType>>`
 
-Get a document with the associated `docId`. `opts.deleted` can be specified to include or exclude a result based on whether the document was deleted or not. By default, `opts.deleted` is `true`.
+Get a document with the associated `docId`. Note that this will return a document even if it has been deleted.
 
 ```ts
 // Create a doc
@@ -132,9 +80,9 @@ console.assert(createdDoc.id === retrievedDoc.id)
 
 ### `getByVersionId`
 
-`(versionId: string, opts?: { deleted?: boolean }) => Promise<MapeoDoc<MapeoType>>`
+`(versionId: string) => Promise<MapeoDoc<MapeoType>>`
 
-Get a document with the associated `versionId`. `opts.deleted` can be specified to include or exclude a result based on whether the document was deleted or not. By default, `opts.deleted` is `true`.
+Get a document for its associated `versionId`.
 
 ```ts
 // Create a doc
@@ -149,12 +97,11 @@ console.assert(createdDoc.version === retrievedDoc.version)
 
 ### `getMany`
 
-`(opts?: { deleted?: boolean, limit?: number}) => Promise<MapeoDoc<MapeoType>[]>`
+`(opts?: { includeDeleted?: boolean }) => Promise<MapeoDoc<MapeoType>[]>`
 
-Get many documents, sorted by `created_at` descending. If no matching documents exist, resolves with an empty array. Can accept the following options (`opts`):
+Get many documents, sorted by `created_at` descending (most recent documents first). If no matching documents exist, resolves with an empty array. Can accept the following options (`opts`):
 
-- `deleted` include deleted documents in the result. Defaults to `false`.
-- `limit` specify max number of documents to return (inclusive)
+- `includeDeleted` include deleted documents in the result. Defaults to `false`.
 
 ```ts
 // No docs have been created yet, so empty array is returned
@@ -169,18 +116,14 @@ const doc3 = await mapeo.observation.create({ ... })
 const allDocs = await mapeo.observation.getMany()
 console.assert(allDocs.length === 3)
 
-// Use the limit option to adjust how many docs are retrieved
-const docsWithLimit = await mapeo.observation.getMany({ limit: 1 })
-console.assert(docsWithLimit.length === 1)
-
 // Delete a document and refetch to see that resulting count changes
 await mapeo.observation.delete(doc3.version)
 
 const nonDeletedDocs = await mapeo.observation.getMany()
 console.assert(nonDeletedDocs.length === 2)
 
-// Specifying `deleted: true` will return all docs, including deleted ones
-const allDocsIncludingDeleted = await mapeo.observation.getMany({ deleted: true })
+// Specifying `includeDeleted: true` will return all docs, including deleted ones
+const allDocsIncludingDeleted = await mapeo.observation.getMany({ includeDeleted: true })
 console.assert(allDocsIncludingDeleted.length === 3)
 ```
 
