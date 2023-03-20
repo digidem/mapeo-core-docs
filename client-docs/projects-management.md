@@ -51,7 +51,7 @@ type Project = {
 Information about the project role for a member. Could potentially look like:
 
 ```ts
-type ProjectRole = "project-creator" | "coordinator" | "member";
+type ProjectRole = "creator" | "coordinator" | "member";
 ```
 
 **_TODO: should `non-member` be included here?_**
