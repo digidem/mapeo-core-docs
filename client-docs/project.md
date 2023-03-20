@@ -46,18 +46,17 @@ Information about the current project. Could potentially look like:
 type Project = {
   id: string;
   name: string;
-  config: Config;
 };
 ```
 
-**_TODO: define `Config`_**
+**_TODO: what other fields are relevant?_**
 
 ### `ProjectRole`
 
 Information about the project role for a member. Could potentially look like:
 
 ```ts
-type ProjectRole = "project-creator" | "coordinator" | "member";
+type ProjectRole = "creator" | "coordinator" | "member";
 ```
 
 **_TODO: should `non-member` be included here?_**
