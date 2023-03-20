@@ -41,11 +41,10 @@ Information about the current project. Could potentially look like:
 type Project = {
   id: string;
   name: string;
-  config: Config;
 };
 ```
 
-**_TODO: define `Config`_**
+**_TODO: what other fields are relevant?_**
 
 ### `ProjectRole`
 
