@@ -91,7 +91,7 @@ Interface for managing a project's members.
 
 #### `member.get`
 
-`(id: string) => Promise<ProjectMember>`
+`(id: string) => Promise<ProjectMember | null>`
 
 Get information about a project member (including yourself).
 
