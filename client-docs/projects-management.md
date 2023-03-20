@@ -72,7 +72,7 @@ type ProjectMember = {
 
 ### `get`
 
-`(id: string) => Promise<Project[]>`
+`(id: string) => Promise<Project | null>`
 
 Get information about a project with the specified `id`.
 
