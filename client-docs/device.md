@@ -13,7 +13,7 @@
 - [Methods](#methods)
 
   - [`getById`](#get)
-  - [`getMany`](#getmany)
+  - [`getAll`](#getAll)
 
 - [Events](#events)
   - [`'connect'`](#connect)
@@ -101,7 +101,7 @@ Retrieve info about a discovered device with the provided `id`.
 const device = mapeo.$device.get("abc123");
 ```
 
-### `getMany`
+### `getAll`
 
 `(opts?: {}) => Promise<DeviceInfo[]>`
 
