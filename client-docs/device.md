@@ -12,7 +12,7 @@
 
 - [Methods](#methods)
 
-  - [`getById`](#get)
+  - [`get`](#get)
   - [`getAll`](#getall)
 
 - [Events](#events)
