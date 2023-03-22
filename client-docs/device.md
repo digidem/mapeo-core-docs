@@ -13,7 +13,7 @@
 - [Methods](#methods)
 
   - [`getById`](#get)
-  - [`getAll`](#getAll)
+  - [`getAll`](#getall)
 
 - [Events](#events)
   - [`'connect'`](#connect)
