@@ -27,11 +27,6 @@
     - [`invite.create`](#invitecreate)
     - [`invite.getMany`](#invitegetmany`)
 
-- [Events](#events)
-
-  - [`'invite:accepted'`](#inviteaccepted)
-  - [`'invite:declined'`](#invitedeclined)
-
 ## Description
 
 Exposes an interface for managing a projects' members and invites.
@@ -204,36 +199,3 @@ const invites = await mapeo.$project.invite.getMany();
 // Assuming none of them have responded yet, outputs 3
 console.log(invites.length);
 ```
-
-## Events
-
-### `'invite:accepted'`
-
-`(id: string, info: { role: ProjectRole }) => void`
-
-Emits when an invited peer has accepted an invitation to join the project. `info` represents information about the invitation that was sent, such as the role.
-
-```ts
-mapeo.$project.on("invite:accepted", async (id, info) => {
-  console.log(`${id} accepted invite to be ${info.role}`);
-
-  // Should be able to retrieve the project member now
-  const member = await mapeo.$project.member.get(id);
-});
-```
-
-**_TODO: should it be possible to get the member at this point, or should this be responsible for explicitly adding the member to the project? i.e. calling `addMember` in the callback body?_**
-
-### `'invite:declined'`
-
-`(id: string, info: { role: ProjectRole }) => void`
-
-Listen to events that are emitted when an invited peer has declined an invitation to join the project. `info` represents information about the invitation that was sent, such as the role.
-
-```ts
-mapeo.$project.on("invite:declined", (id, info) => {
-  console.log(`${id} declined invite to be ${info.role}`);
-});
-```
-
-**_TODO: what other things should be included in `info`?_**
