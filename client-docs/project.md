@@ -77,7 +77,7 @@ type ProjectMember = {
 Get information about the current project.
 
 ```ts
-const projectInfo = await mapeo.$project.info();
+const projectInfo = await client.$project.info();
 ```
 
 ### `member`
@@ -91,7 +91,7 @@ Interface for managing a project's members.
 Get information about a project member (including yourself).
 
 ```ts
-const member = await mapeo.$project.member.get("abc123");
+const member = await client.$project.member.get("abc123");
 ```
 
 **_TODO: how do we get ourself?_**
@@ -103,7 +103,7 @@ const member = await mapeo.$project.member.get("abc123");
 Get all project members and information about each (including yourself).
 
 ```ts
-const members = await mapeo.$project.member.getMany();
+const members = await client.$project.member.getMany();
 ```
 
 **_TODO: any `opts` needed?_**
@@ -118,7 +118,7 @@ Add a member to the project. Throws if the member already exists or if the calle
 const memberPublicKey = 'abc123'
 const memberInfo = {...}
 
-const member = await mapeo.$project.member.add(memberPublicKey, memberInfo)
+const member = await client.$project.member.add(memberPublicKey, memberInfo)
 ```
 
 **_TODO: consolidate to single object param?_**
@@ -135,10 +135,10 @@ Remove a member from the project. Throws if the member does not exist or if the 
 
 ```ts
 // Add the member
-const member = await mapeo.$project.member.add('abc123', {...})
+const member = await client.$project.member.add('abc123', {...})
 
 // Nevermind, time to remove the member
-await mapeo.$project.member.remove(member.id)
+await client.$project.member.remove(member.id)
 ```
 
 **_TODO: should we not throw if member not found?_**
@@ -153,10 +153,10 @@ Update info about a member. Throws if the member does not exist or if the caller
 
 ```ts
 // Add the member
-const member = await mapeo.$project.member.add('abc123', {...})
+const member = await client.$project.member.add('abc123', {...})
 
 // Update the member
-const updatedMember = await mapeo.$project.member.update(member.id, {
+const updatedMember = await client.$project.member.update(member.id, {
   ...member,
   // Any relevant properties you want to update
 })
@@ -175,7 +175,7 @@ Interface for managing project invites.
 Invite a peer to join the project. Note that this adheres to a “fire-and-forget” strategy and should resolve when the invite is successfully _sent_. If you need to subscribe to when the invite is either accepted or declined, add an event listener for the `invite:accepted` or `invite:declined` events, respectively.
 
 ```ts
-await mapeo.$project.invite.create("some-peer-id", "member");
+await client.$project.invite.create("some-peer-id", "member");
 ```
 
 **_TODO: is fire-and-forget okay for this?_**
@@ -190,11 +190,11 @@ Get invites that have been created. Can use `opts` to filter the returned result
 
 ```ts
 // Invite some peers
-await mapeo.$project.invite.create("peer-a", "coordinator");
-await mapeo.$project.invite.create("peer-b", "member");
-await mapeo.$project.invite.create("peer-c", "member");
+await client.$project.invite.create("peer-a", "coordinator");
+await client.$project.invite.create("peer-b", "member");
+await client.$project.invite.create("peer-c", "member");
 
-const invites = await mapeo.$project.invite.getMany();
+const invites = await client.$project.invite.getMany();
 
 // Assuming none of them have responded yet, outputs 3
 console.log(invites.length);
