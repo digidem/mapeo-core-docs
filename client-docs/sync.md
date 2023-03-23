@@ -50,12 +50,12 @@ Get information about discovery and sync connection types that are enabled.
 
 ```ts
 // logs "{ discovery: [], sync: [] }"
-console.log(await mapeo.$sync.info());
+console.log(await client.$sync.info());
 
-await mapeo.$sync.enableDiscovery(["internet", "lan"]);
+await client.$sync.enableDiscovery(["internet", "lan"]);
 
 // logs "{ discovery: ["internet", "lan"], sync: [] }"
-console.log(await mapeo.$sync.info());
+console.log(await client.$sync.info());
 ```
 
 ### `setDiscovery`
@@ -68,13 +68,13 @@ Note that there existing syncing processes with other peers happening, disabling
 
 ```ts
 // Enable discovery
-await mapeo.$sync.setDiscovery(["internet", "lan"]);
+await client.$sync.setDiscovery(["internet", "lan"]);
 
 // Only enable LAN discovery
-await mapeo.$sync.setDiscovery(["lan"]);
+await client.$sync.setDiscovery(["lan"]);
 
 // Disable discovery
-await mapeo.$sync.setDiscovery(null);
+await client.$sync.setDiscovery(null);
 ```
 
 ### `setSync`
@@ -87,11 +87,11 @@ Note that there existing syncing processes with other peers happening, disabling
 
 ```ts
 // Enable sync
-await mapeo.$sync.setSync(["internet", "lan"]);
+await client.$sync.setSync(["internet", "lan"]);
 
 // Only enable LAN sync
-await mapeo.$sync.setSync(["lan"]);
+await client.$sync.setSync(["lan"]);
 
 // Disable sync
-await mapeo.$sync.setSync(null);
+await client.$sync.setSync(null);
 ```
