@@ -73,7 +73,7 @@ type ProjectMember = {
 Get information about a project with the specified `id`.
 
 ```ts
-const projects = await mapeo.$projectsManagement.get("abc123");
+const projects = await client.$projectsManagement.get("abc123");
 ```
 
 ### `getMany`
@@ -83,7 +83,7 @@ const projects = await mapeo.$projectsManagement.get("abc123");
 Get all projects.
 
 ```ts
-const projects = await mapeo.$projectsManagement.getMany();
+const projects = await client.$projectsManagement.getMany();
 ```
 
 **_TODO: What does `opts` look like?_**
@@ -97,7 +97,7 @@ const projects = await mapeo.$projectsManagement.getMany();
 Create a project.
 
 ```ts
-const project = await mapeo.$projectsManagement.create({...});
+const project = await client.$projectsManagement.create({...});
 ```
 
 **_TODO: What does `opts` look like?_**
@@ -109,9 +109,9 @@ const project = await mapeo.$projectsManagement.create({...});
 Update a project's information. Throws if caller does not have the proper permissions.
 
 ```ts
-const project = await mapeo.$projectsManagement.create({...});
+const project = await client.$projectsManagement.create({...});
 
-const updatedProject = await mapeo.$projectsManagement.update(project.id, {...});
+const updatedProject = await client.$projectsManagement.update(project.id, {...});
 ```
 
 **_TODO: What does `newInfo` look like?_**
@@ -123,9 +123,9 @@ const updatedProject = await mapeo.$projectsManagement.update(project.id, {...})
 Delete a project with the specified `id`. Throws if caller does not have the proper permissions.
 
 ```ts
-const project = await mapeo.$projectsManagement.create();
+const project = await client.$projectsManagement.create();
 
-const deletedProject = await mapeo.$projectsManagement.delete(project.id);
+const deletedProject = await client.$projectsManagement.delete(project.id);
 ```
 
 **_TODO: Does this return a deleted `Project`?_**
@@ -139,9 +139,9 @@ const deletedProject = await mapeo.$projectsManagement.delete(project.id);
 Accept an invite received from another peer.
 
 ```ts
-mapeo.$projectsManagement.on('invite:received', (info) => {
+client.$projectsManagement.on('invite:received', (info) => {
   // In reality, probably would perform logic to check it
-  mapeo.$projectsManagement.invite.accept(info.id, {...})
+  client.$projectsManagement.invite.accept(info.id, {...})
 })
 ```
 
@@ -156,9 +156,9 @@ mapeo.$projectsManagement.on('invite:received', (info) => {
 Decline an invite received from another peer.
 
 ```ts
-mapeo.$projectsManagement.on('invite:received', (info) => {
+client.$projectsManagement.on('invite:received', (info) => {
   // In reality, probably would perform logic to check it
-  mapeo.$projectsManagement.invite.decline(info.id, {...})
+  client.$projectsManagement.invite.decline(info.id, {...})
 })
 ```
 
