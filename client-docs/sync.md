@@ -15,13 +15,6 @@
   - [`setDiscovery`](#setdiscovery)
   - [`setSync`](#setsync)
 
-- [Events](#events)
-
-  - [`'discovery:start'`](#discoverystart)
-  - [`'discovery:stop'`](#discoverystop)
-  - [`'sync:start'`](#syncstart)
-  - [`'sync:stop'`](#syncstop)
-
 ## Description
 
 Provides an imperative API for managing project discovery and sync strategies.
@@ -101,54 +94,4 @@ await mapeo.$sync.setSync(["lan"]);
 
 // Disable sync
 await mapeo.$sync.setSync(null);
-```
-
-## Events
-
-### `'discovery:start'`
-
-`() => void`
-
-Emits when discovery is enabled.
-
-```ts
-mapeo.$sync.on("discovery:start", () => {
-  console.log("Now seeking new peers");
-});
-```
-
-### `'discovery:stop'`
-
-`() => void`
-
-Emits when discovery is disabled.
-
-```ts
-mapeo.$sync.on("discovery:stop", () => {
-  console.log("No longer seeking new peers");
-});
-```
-
-### `'sync:start'`
-
-`() => void`
-
-Emits when sync is enabled.
-
-```ts
-mapeo.$sync.on("sync:start", () => {
-  console.log("Now allowing sync");
-});
-```
-
-### `'sync:stop'`
-
-`() => void`
-
-Emits when sync is disabled.
-
-```ts
-mapeo.$sync.on("sync:stop", () => {
-  console.log("No longer allowing sync");
-});
 ```
