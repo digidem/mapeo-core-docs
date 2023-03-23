@@ -7,8 +7,6 @@
 - [Types](#types)
 
   - [`Project`](#project)
-  - [`ProjectRole`](#projectrole)
-  - [`ProjectMember`](#projectmember)
 
 - [Methods](#methods)
 
@@ -41,28 +39,6 @@ type Project = {
 ```
 
 **_TODO: what other fields are relevant?_**
-
-### `ProjectRole`
-
-Information about the project role for a member. Could potentially look like:
-
-```ts
-type ProjectRole = "creator" | "coordinator" | "member";
-```
-
-**_TODO: should `non-member` be included here?_**
-
-### `ProjectMember`
-
-A member that is part of the project. Could potentially look like:
-
-```ts
-type ProjectMember = {
-  id: string;
-  name?: string;
-  role: ProjectRole;
-};
-```
 
 ## Methods
 
@@ -106,7 +82,7 @@ const project = await client.$projectsManagement.create({...});
 
 `(projectId: string, newInfo: {}) => Promise<Project>`
 
-Update a project's information. Throws if caller does not have the proper permissions.
+Update a project's information. Throws if caller does not have the proper permissions or if the project does not exist.
 
 ```ts
 const project = await client.$projectsManagement.create({...});
@@ -120,7 +96,7 @@ const updatedProject = await client.$projectsManagement.update(project.id, {...}
 
 `(id: string) => Promise<Project>`
 
-Delete a project with the specified `id`. Throws if caller does not have the proper permissions.
+Delete a project with the specified `id`. Throws if caller does not have the proper permissions or if the project does not exist.
 
 ```ts
 const project = await client.$projectsManagement.create();
@@ -139,15 +115,13 @@ const deletedProject = await client.$projectsManagement.delete(project.id);
 Accept an invite received from another peer.
 
 ```ts
-client.$projectsManagement.on('invite:received', (info) => {
+client.on('invite-received', (invite) => {
   // In reality, probably would perform logic to check it
-  client.$projectsManagement.invite.accept(info.id, {...})
+  client.$projectsManagement.invite.accept(invite.id, {...})
 })
 ```
 
 **_TODO: What does `params` look like?_**
-
-**_TODO: Does this belong in this API?_**
 
 #### `invite.decline`
 
@@ -156,9 +130,9 @@ client.$projectsManagement.on('invite:received', (info) => {
 Decline an invite received from another peer.
 
 ```ts
-client.$projectsManagement.on('invite:received', (info) => {
+client.on('invite-received', (invite) => {
   // In reality, probably would perform logic to check it
-  client.$projectsManagement.invite.decline(info.id, {...})
+  client.$projectsManagement.invite.decline(invite.id, {...})
 })
 ```
 
