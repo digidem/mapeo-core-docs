@@ -23,10 +23,6 @@
     - [`invite.accept`](#inviteaccept)
     - [`invite.decline`](#invitedecline)
 
-- [Events](#events)
-
-  - [`'invite:received'`](#invitereceived)
-
 ## Description
 
 Exposes an interface for managing projects and responding to project invites.
@@ -167,29 +163,3 @@ mapeo.$projectsManagement.on('invite:received', (info) => {
 ```
 
 **_TODO: What does `params` look like?_**
-
-## Events
-
-### `'invite:received'`
-
-`(info: { id: string, project: Project, invitedBy: ProjectMember, role: ProjectRole }) => void`
-
-Listen to events emitted when a peer invites you to a project.
-
-```ts
-mapeo.$project.on("invite:received", (info) => {
-  const { id, project, invitedBy, role } = info;
-
-  console.log(`Invite id is: ${id}`);
-  console.log(`You are invited to project: ${project.name || project.id}`);
-  console.log(`Invited by: ${invitedBy.id}`);
-  console.log(`If you accept, your role will be: ${role}`);
-
-  // We're adamant about being a coordinator...
-  if (role === "coordinator") {
-    mapeo.$projectsManagement.invite.accept(id, {...});
-  } else {
-    mapeo.$projectsManagement.invite.decline(id, {...});
-  }
-});
-```
