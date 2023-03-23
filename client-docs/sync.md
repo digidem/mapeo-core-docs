@@ -73,7 +73,7 @@ await client.$sync.setDiscovery(["internet", "lan"]);
 // Only enable LAN discovery
 await client.$sync.setDiscovery(["lan"]);
 
-// Disable discovery
+// Disable discovery (can also pass [])
 await client.$sync.setDiscovery(null);
 ```
 
@@ -92,6 +92,6 @@ await client.$sync.setSync(["internet", "lan"]);
 // Only enable LAN sync
 await client.$sync.setSync(["lan"]);
 
-// Disable sync
+// Disable sync (can also pass [])
 await client.$sync.setSync(null);
 ```
