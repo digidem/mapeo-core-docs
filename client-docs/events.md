@@ -114,7 +114,7 @@ type Invite = {
 Emits when a peer connects.
 
 ```ts
-mapeo.on("peer-connect", (peer) => {
+client.on("peer-connect", (peer) => {
   console.log(`Peer with id ${peer.id} connected`);
 });
 ```
@@ -126,7 +126,7 @@ mapeo.on("peer-connect", (peer) => {
 Emits when a peer disconnects.
 
 ```ts
-mapeo.on("peer-disconnect", (peer) => {
+client.on("peer-disconnect", (peer) => {
   console.log(`Device with id ${peer.id} disconnected`);
 });
 ```
@@ -138,7 +138,7 @@ mapeo.on("peer-disconnect", (peer) => {
 Emits when information about a peer changes.
 
 ```ts
-mapeo.on("peer-info", (peer) => {
+client.on("peer-info", (peer) => {
   // Use updated peer in some way...
 });
 ```
@@ -154,7 +154,7 @@ mapeo.on("peer-info", (peer) => {
 Emits when ongoing sync is occurring with a peer.
 
 ```ts
-mapeo.on("peer-sync", (state) => {
+client.on("peer-sync", (state) => {
   // Check for sync errors
   if (state.syncError) {
     // Handle sync error...
@@ -195,7 +195,7 @@ mapeo.on("peer-sync", (state) => {
 Emits when discovery is enabled.
 
 ```ts
-mapeo.on("discovery-start", () => {
+client.on("discovery-start", () => {
   console.log("Now seeking new peers");
 });
 ```
@@ -207,7 +207,7 @@ mapeo.on("discovery-start", () => {
 Emits when discovery is disabled.
 
 ```ts
-mapeo.on("discovery-stop", () => {
+client.on("discovery-stop", () => {
   console.log("No longer seeking new peers");
 });
 ```
@@ -219,7 +219,7 @@ mapeo.on("discovery-stop", () => {
 Emits when sync is enabled.
 
 ```ts
-mapeo.on("sync-start", () => {
+client.on("sync-start", () => {
   console.log("Now allowing sync");
 });
 ```
@@ -231,7 +231,7 @@ mapeo.on("sync-start", () => {
 Emits when sync is disabled.
 
 ```ts
-mapeo.on("sync-stop", () => {
+client.on("sync-stop", () => {
   console.log("No longer allowing sync");
 });
 ```
@@ -243,7 +243,7 @@ mapeo.on("sync-stop", () => {
 Listen to events emitted when a peer invites you to a project. `invite.from` represents information about the peer that sent the invite.
 
 ```ts
-mapeo.on("invite-received", (invite) => {
+client.on("invite-received", (invite) => {
   console.log(`Invite id is: ${invite.id}`);
   console.log(`You are invited to project: ${invite.project.name || invite.project.id}`);
   console.log(`Invited by: ${invite.from.id}`);
@@ -251,9 +251,9 @@ mapeo.on("invite-received", (invite) => {
 
   // We're adamant about being a coordinator...
   if (invite.role === "coordinator") {
-    mapeo.$projectsManagement.invite.accept(invite.id, {...});
+    client.$projectsManagement.invite.accept(invite.id, {...});
   } else {
-    mapeo.$projectsManagement.invite.decline(invite.id, {...});
+    client.$projectsManagement.invite.decline(invite.id, {...});
   }
 });
 ```
@@ -265,7 +265,7 @@ mapeo.on("invite-received", (invite) => {
 Emits when an invited peer has accepted an invitation to join the project. `info.from` field represents information about the peer that accepted the invite.
 
 ```ts
-mapeo.on("invite-accepted", (info) => {
+client.on("invite-accepted", (info) => {
   console.log(`${info.id} accepted invite to be ${info.role}`);
 });
 ```
@@ -279,7 +279,7 @@ mapeo.on("invite-accepted", (info) => {
 Listen to events that are emitted when an invited peer has declined an invitation to join the project. `info.from` represents information about the peer that declined the invite.
 
 ```ts
-mapeo.on("invite-declined", (info) => {
+client.on("invite-declined", (info) => {
   console.log(`${info.id} declined invite to be ${info.role}`);
 });
 ```
