@@ -62,7 +62,7 @@ console.log(await client.$sync.info());
 
 `(connectionTypes: ConnectionType[] | null) => Promise<void>`
 
-Set the discovery connection types to enable. If `setDiscovery` has not been previously called with a valid connection type, discovery becomes enabled. If `connectionTypes` is `null` or `[]`, discovery becomes disabled. Do not rely on the resolving of this method to know when the process starts or stops. Instead, listen to the `'discovery:start'` and `'discovery:stop'` events.
+Set the discovery connection types to enable. If `setDiscovery` has not been previously called with a valid connection type, discovery becomes enabled. If `connectionTypes` is `null` or `[]`, discovery becomes disabled. Do not rely on the resolving of this method to know when the process starts or stops. Instead, listen to the `'discovery-start'` and `'discovery-stop'` events.
 
 Note that there existing syncing processes with other peers happening, disabling discovery does not disable these immediately. Use `setSync` to handle this more explicitly.
 
@@ -81,9 +81,9 @@ await client.$sync.setDiscovery(null);
 
 `(connectionTypes: ConnectionType[] | null) => Promise<void>`
 
-Set the sync connection types to enable. If `setSync` has not been previously called with a valid connection type, sync becomes enabled. If `connectionTypes` is `null` or `[]`, sync becomes disabled. Do not rely on the resolving of this method to know when the process starts or stops. Instead, listen to the `'sync:start'` and `'sync:stop'` events.
+Set the sync connection types to enable. If `setSync` has not been previously called with a valid connection type, sync becomes enabled. If `connectionTypes` is `null` or `[]`, sync becomes disabled. Do not rely on the resolving of this method to know when the process starts or stops. Instead, listen to the `'sync-start'` and `'sync-stop'` events.
 
-Note that there existing syncing processes with other peers happening, disabling sync does not close these immediately. The server will attempt to gracefully finish or close them and eventually emit the `'sync:stop'` event.
+Note that there existing syncing processes with other peers happening, disabling sync does not close these immediately. The server will attempt to gracefully finish or close them and eventually emit the `'sync-stop'` event.
 
 ```ts
 // Enable sync
