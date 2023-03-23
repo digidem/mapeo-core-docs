@@ -24,15 +24,34 @@ A DataType represents application-specific data. Each DataType has a schema that
 
 For now, exposed DataTypes are determined by the server-implementation that uses Mapeo Core. In the future, we would like to support application-defined DataTypes to flexibly support a wide variety of applications.
 
+Datatypes are exposed on the client as fields that are _not_ prefixed with `$`. For example, accessing the interface for an application-defined observation type uses something like `client.observation`.
+
 ## Types
 
 ### `MapeoDoc`
 
-Basically represents the entity that is stored in the database. Has information about the specific application data in its `value` field, as well as some meta information about the [`Doc`](https://github.com/digidem/mapeo-core-next/blob/main/lib/types.js#L90) as top level fields, such as `id`, `version`, `deleted`, `links`, `forks`, `created_at`, and `updated_at`.
+Basically represents the entity that is stored in the database. Has information about the specific application data in its `value` field, as well as some meta information about the [`Doc`](https://github.com/digidem/mapeo-core-next/blob/main/lib/types.js#L90).
+
+```ts
+type DataType<T extends MapeoType> = {
+  id: string;
+  type: string;
+  version: string;
+  created_at: string;
+  updated_at: string | null;
+  links: string[] | null;
+  forks: string[] | null;
+  value: T;
+};
+```
 
 ### `MapeoType`
 
-Represents any application-specific key-value data associated with a `MapeoDoc`. This can be updated in the database and is generally available on a doc as `doc.value`
+Represents any application-specific key-value data associated with a `MapeoDoc`. This can be updated in the database and is generally available on a doc as `doc.value`.
+
+```ts
+type MapeoType = Record<string, any>;
+```
 
 ## Methods
 
@@ -51,7 +70,7 @@ type Observation = {
 };
 
 // We can create an observation document like this
-const doc = await mapeo.observation.create({
+const doc = await client.observation.create({
   lat: 0,
   lon: 0,
   tags: { type: "animal" },
@@ -65,14 +84,14 @@ console.log(doc.value); // prints { lat: 0, lon: 0, tags: { type: "animal" } }
 
 `(docId: string) => Promise<MapeoDoc<MapeoType>>`
 
-Get a document with the associated `docId`. Note that this will return a document even if it has been deleted.
+Get a document with the associated `docId`. Note that this will return the most recent version of a document, even if it has been deleted.
 
 ```ts
 // Create a doc
-const createdDoc = await mapeo.observation.create({ ... })
+const createdDoc = await client.observation.create({ ... })
 
 // Get the doc using the id we have after creating it
-const retrievedDoc = await mapeo.observation.getByDocId(createdDoc.id)
+const retrievedDoc = await client.observation.getByDocId(createdDoc.id)
 
 // Can guarantee that this passes
 console.assert(createdDoc.id === retrievedDoc.id)
@@ -86,10 +105,10 @@ Get a document for its associated `versionId`.
 
 ```ts
 // Create a doc
-const createdDoc = await mapeo.observation.create({ ... })
+const createdDoc = await client.observation.create({ ... })
 
 // Get the doc using the id we have after creating it
-const retrievedDoc = await mapeo.observation.getByVersionId(createdDoc.version)
+const retrievedDoc = await client.observation.getByVersionId(createdDoc.version)
 
 // Can guarantee that this passes
 console.assert(createdDoc.version === retrievedDoc.version)
@@ -105,25 +124,25 @@ Get many documents, sorted by `created_at` descending (most recent documents fir
 
 ```ts
 // No docs have been created yet, so empty array is returned
-assert((await mapeo.observation.getMany()).length === 0)
+assert((await client.observation.getMany()).length === 0)
 
 // Create a few docs
-const doc1 = await mapeo.observation.create({ ... })
-const doc2 = await mapeo.observation.create({ ... })
-const doc3 = await mapeo.observation.create({ ... })
+const doc1 = await client.observation.create({ ... })
+const doc2 = await client.observation.create({ ... })
+const doc3 = await client.observation.create({ ... })
 
 // Fetch all docs
-const allDocs = await mapeo.observation.getMany()
+const allDocs = await client.observation.getMany()
 console.assert(allDocs.length === 3)
 
 // Delete a document and refetch to see that resulting count changes
-await mapeo.observation.delete(doc3.version)
+await client.observation.delete(doc3.version)
 
-const nonDeletedDocs = await mapeo.observation.getMany()
+const nonDeletedDocs = await client.observation.getMany()
 console.assert(nonDeletedDocs.length === 2)
 
 // Specifying `includeDeleted: true` will return all docs, including deleted ones
-const allDocsIncludingDeleted = await mapeo.observation.getMany({ includeDeleted: true })
+const allDocsIncludingDeleted = await client.observation.getMany({ includeDeleted: true })
 console.assert(allDocsIncludingDeleted.length === 3)
 ```
 
@@ -135,14 +154,14 @@ Update a document associated with `versionId` with a new `value`. Throws if the 
 
 ```ts
 // Create a doc
-const doc = await mapeo.observation.create({
+const doc = await client.observation.create({
   lat: 0,
   lon: 0,
   tags: { type: "animal" },
 });
 
 // Update the doc with some new coordinates
-const updatedDoc = await mapeo.observation.update(doc.version, {
+const updatedDoc = await client.observation.update(doc.version, {
   ...doc.value,
   lat: 10,
   lon: 10,
@@ -159,10 +178,10 @@ console.assert(updatedDoc.value.lon === 10);
 Delete a document that matches the specified `versionId`. Throws if the document does not exist. Otherwise resolves with the deleted document.
 
 ```ts
-const doc = await mapeo.observation.create({ ... })
+const doc = await client.observation.create({ ... })
 
 // Delete the doc
-const deletedDoc = await mapeo.observation.delete(doc3.versionId)
+const deletedDoc = await client.observation.delete(doc3.versionId)
 
 // The deleted doc will have a `deleted` property equal to `true`
 console.assert(deletedDoc.deleted === true)
