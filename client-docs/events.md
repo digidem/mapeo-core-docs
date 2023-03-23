@@ -11,6 +11,8 @@ Consolidated list of events that are emitted from the server and can be subscrib
   - [`Peer`](#peer)
   - [`SyncExchangeInfo`](#syncexchangeinfo)
   - [`SyncState`](#syncstate)
+  - [`ProjectRole`](#projectrole)
+  - [`Invite`](#invite)
 
 - [Events](#events)
   - [`'peer-connect'`](#peer-connect)
@@ -86,9 +88,17 @@ type SyncState = {
 };
 ```
 
-### `InviteInfo`
+### `ProjectRole`
 
-Information about an invite that has been sent, received, accepted, or declined.
+Information about the project role for a member.
+
+```ts
+type ProjectRole = "creator" | "coordinator" | "member";
+```
+
+### `Invite`
+
+Information about an invite that has been received, accepted, or declined.
 
 ```ts
 type Invite = {
@@ -238,7 +248,7 @@ client.on("sync-stop", () => {
 
 ### `'invite-received'`
 
-`(invite: InviteInfo) => void`
+`(invite: Invite) => void`
 
 Listen to events emitted when a peer invites you to a project. `invite.from` represents information about the peer that sent the invite.
 
@@ -260,13 +270,13 @@ client.on("invite-received", (invite) => {
 
 ### `'invite-accepted'`
 
-`(info: InviteInfo) => void`
+`(invite: Invite) => void`
 
-Emits when an invited peer has accepted an invitation to join the project. `info.from` field represents information about the peer that accepted the invite.
+Emits when an invited peer has accepted an invitation to join the project. `invite.from` field represents information about the peer that accepted the invite.
 
 ```ts
-client.on("invite-accepted", (info) => {
-  console.log(`${info.id} accepted invite to be ${info.role}`);
+client.on("invite-accepted", (invite) => {
+  console.log(`${invite.id} accepted invite to be ${info.role}`);
 });
 ```
 
@@ -274,12 +284,12 @@ client.on("invite-accepted", (info) => {
 
 ### `'invite-declined'`
 
-`(info: InviteInfo) => void`
+`(invite: Invite) => void`
 
 Listen to events that are emitted when an invited peer has declined an invitation to join the project. `info.from` represents information about the peer that declined the invite.
 
 ```ts
-client.on("invite-declined", (info) => {
-  console.log(`${info.id} declined invite to be ${info.role}`);
+client.on("invite-declined", (invite) => {
+  console.log(`${invite.id} declined invite to be ${invite.role}`);
 });
 ```
