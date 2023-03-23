@@ -6,57 +6,140 @@ Consolidated list of events that are emitted from the server and can be subscrib
 
 ## Table of Contents
 
-- [`'device:connect'`](#deviceconnect)
-- [`'device:disconnect'`](#devicedisconnect)
-- [`'device:info'`](#deviceinfo)
-- [`'device:sync'`](#devicesync)
-- [`'discovery:start'`](#discoverystart)
-- [`'discovery:stop'`](#discoverystop)
-- [`'sync:start'`](#syncstart)
-- [`'sync:stop'`](#syncstop)
-- [`'invite:received'`](#invitereceived)
-- [`'invite:accepted'`](#inviteaccepted)
-- [`'invite:declined'`](#invitedeclined)
+- [Types](#types)
+
+  - [`Peer`](#peer)
+  - [`SyncExchangeInfo`](#syncexchangeinfo)
+  - [`SyncState`](#syncstate)
+
+- [Events](#events)
+  - [`'peer-connect'`](#peer-connect)
+  - [`'peer-disconnect'`](#peer-disconnect)
+  - [`'peer-info'`](#peer-info)
+  - [`'peer-sync'`](#peer-sync)
+  - [`'discovery-start'`](#discovery-start)
+  - [`'discovery-stop'`](#discovery-stop)
+  - [`'sync-start'`](#sync-start)
+  - [`'sync-stop'`](#sync-stop)
+  - [`'invite-received'`](#invite-received)
+  - [`'invite-accepted'`](#invite-accepted)
+  - [`'invite-declined'`](#invite-declined)
 
 ---
 
-### `'device:connect'`
+## Types
 
-`(info: DeviceInfo) => void`
+### `Peer`
+
+Information about a discovered peer or a project peer.
+
+```ts
+type Peer = {
+  id: string;
+  name: string | null;
+  lastSynced: string;
+  lastSeen: string`;
+};
+```
+
+### `SyncExchangeInfo`
+
+Information about the amount of data that a peer wants and has relative to another (e.g. yourself).
+
+```ts
+type SyncExchangeInfo = {
+  has: number;
+  wants: number;
+};
+```
+
+### `SyncState`
+
+Information about the sync state of a peer relative to another (e.g. yourself).
+
+```ts
+type SyncState = {
+  // Peer id
+  id: string;
+  // Sync exchange info for database records
+  db: SyncExchangeInfo;
+  // Sync exchange info for media
+  media: SyncExchangeInfo;
+  // Snapshot of the sync exchange info when the sync started
+  atSyncStart: {
+    timestamp: string;
+    db: SyncExchangeInfo;
+    media: SyncExchangeInfo;
+  };
+  // The last time a sync completed
+  lastCompletedAt: string;
+  // Populated if an error occurred when trying to sync
+  syncError: {
+    timestamp: string;
+    error: string;
+  } | null;
+  // Populated if an error occurrred when trying to connect to peer
+  connectionError: {
+    timestamp: string;
+    error: string;
+  } | null;
+};
+```
+
+### `InviteInfo`
+
+Information about an invite that has been sent, received, accepted, or declined.
+
+```ts
+type Invite = {
+  id: string;
+  project: {
+    id: string;
+    name: string | null;
+  };
+  from: {
+    id: string;
+    name: string | null;
+  };
+  role: ProjectRole;
+};
+```
+
+## Events
+
+### `'peer:connect'`
+
+`(peer: Peer) => void`
 
 Emits when a peer connects.
 
 ```ts
-mapeo.on("device:connect", (info: DeviceInfo) => {
-  console.log(`Device with id ${info.id} connected`);
+mapeo.on("peer-connect", (peer) => {
+  console.log(`Peer with id ${peer.id} connected`);
 });
 ```
 
-**_TODO: Should the payload include more than just `DeviceInfo`?_**
+### `'peer-disconnect'`
 
-### `'device:disconnect'`
-
-`(info: DeviceInfo) => void`
+`(peer: Peer) => void`
 
 Emits when a peer disconnects.
 
 ```ts
-mapeo.on("device:disconnect", (info: DeviceInfo) => {
-  console.log(`Device with id ${info.id} disconnected`);
+mapeo.on("peer-disconnect", (peer) => {
+  console.log(`Device with id ${peer.id} disconnected`);
 });
 ```
 
-**_TODO: Should the payload include more than just `DeviceInfo`?_**
+### `'peer-info'`
 
-### `'device:info'`
-
-`(info: DeviceInfo) => void`
+`(peer: Peer) => void`
 
 Emits when information about a peer changes.
 
 ```ts
-mapeo.on("device:info", (info: DeviceInfo) => {
-  // Use updated device information in some way...
+mapeo.on("peer-info", (peer) => {
+  // Use updated peer in some way...
 });
 ```
 
@@ -64,34 +147,39 @@ mapeo.on("device:info", (info: DeviceInfo) => {
 
 **_TODO: Improve usage example_**
 
-### `'device:sync'`
+### `'peer-sync'`
 
 `(state: SyncState) => void`
 
 Emits when ongoing sync is occurring with a peer.
 
 ```ts
-mapeo.on("device:sync", (state: SyncState) => {
+mapeo.on("peer-sync", (state) => {
   // Check for sync errors
   if (state.syncError) {
     // Handle sync error...
     return;
   }
+
   // Check for connection errors
   if (state.connectionError) {
     // Handle connection error...
     return;
   }
+
   let gaveEverything = false;
   let receivedEverything = false;
+
   // They have given everything that we wanted
   if (state.db.has === 0 && state.media.has === 0) {
     gaveEverything = true;
   }
+
   // They have received everything that they wanted
   if (state.db.want === 0 && state.media.want === 0) {
     receivedEverything = true;
   }
+
   if (gaveEverything && receivedEverything) {
     console.log("Sync basically done!");
   }
@@ -100,102 +188,98 @@ mapeo.on("device:sync", (state: SyncState) => {
 
 **_TODO: Should there be a separate event for when sync is done?_**
 
-### `'discovery:start'`
+### `'discovery-start'`
 
 `() => void`
 
 Emits when discovery is enabled.
 
 ```ts
-mapeo.on("discovery:start", () => {
+mapeo.on("discovery-start", () => {
   console.log("Now seeking new peers");
 });
 ```
 
-### `'discovery:stop'`
+### `'discovery-stop'`
 
 `() => void`
 
 Emits when discovery is disabled.
 
 ```ts
-mapeo.on("discovery:stop", () => {
+mapeo.on("discovery-stop", () => {
   console.log("No longer seeking new peers");
 });
 ```
 
-### `'sync:start'`
+### `'sync-start'`
 
 `() => void`
 
 Emits when sync is enabled.
 
 ```ts
-mapeo.on("sync:start", () => {
+mapeo.on("sync-start", () => {
   console.log("Now allowing sync");
 });
 ```
 
-### `'sync:stop'`
+### `'sync-stop'`
 
 `() => void`
 
 Emits when sync is disabled.
 
 ```ts
-mapeo.on("sync:stop", () => {
+mapeo.on("sync-stop", () => {
   console.log("No longer allowing sync");
 });
 ```
 
-### `'invite:received'`
+### `'invite-received'`
 
-`(info: { id: string, project: Project, invitedBy: ProjectMember, role: ProjectRole }) => void`
+`(invite: InviteInfo) => void`
 
-Listen to events emitted when a peer invites you to a project.
+Listen to events emitted when a peer invites you to a project. `invite.from` represents information about the peer that sent the invite.
 
 ```ts
-mapeo.on("invite:received", (info) => {
-  const { id, project, invitedBy, role } = info;
-  console.log(`Invite id is: ${id}`);
-  console.log(`You are invited to project: ${project.name || project.id}`);
-  console.log(`Invited by: ${invitedBy.id}`);
-  console.log(`If you accept, your role will be: ${role}`);
+mapeo.on("invite-received", (invite) => {
+  console.log(`Invite id is: ${invite.id}`);
+  console.log(`You are invited to project: ${invite.project.name || invite.project.id}`);
+  console.log(`Invited by: ${invite.from.id}`);
+  console.log(`If you accept, your role will be: ${invite.role}`);
+
   // We're adamant about being a coordinator...
-  if (role === "coordinator") {
-    mapeo.$projectsManagement.invite.accept(id, {...});
+  if (invite.role === "coordinator") {
+    mapeo.$projectsManagement.invite.accept(invite.id, {...});
   } else {
-    mapeo.$projectsManagement.invite.decline(id, {...});
+    mapeo.$projectsManagement.invite.decline(invite.id, {...});
   }
 });
 ```
 
-### `'invite:accepted'`
+### `'invite-accepted'`
 
-`(id: string, info: { role: ProjectRole }) => void`
+`(info: InviteInfo) => void`
 
-Emits when an invited peer has accepted an invitation to join the project. `info` represents information about the invitation that was sent, such as the role.
+Emits when an invited peer has accepted an invitation to join the project. `info.from` field represents information about the peer that accepted the invite.
 
 ```ts
-mapeo.on("invite:accepted", async (id, info) => {
-  console.log(`${id} accepted invite to be ${info.role}`);
-  // Should be able to retrieve the project member now
-  const member = await mapeo.$project.member.get(id);
+mapeo.on("invite-accepted", (info) => {
+  console.log(`${info.id} accepted invite to be ${info.role}`);
 });
 ```
 
-**_TODO: should it be possible to get the member at this point, or should this be responsible for explicitly adding the member to the project? i.e. calling `addMember` in the callback body?_**
+**_TODO: Will the accepting peer already be added to the project at this point? Or will that need to be handled here using `project.member.add()`?_**
 
-### `'invite:declined'`
+### `'invite-declined'`
 
-`(id: string, info: { role: ProjectRole }) => void`
+`(info: InviteInfo) => void`
 
-Listen to events that are emitted when an invited peer has declined an invitation to join the project. `info` represents information about the invitation that was sent, such as the role.
+Listen to events that are emitted when an invited peer has declined an invitation to join the project. `info.from` represents information about the peer that declined the invite.
 
 ```ts
-mapeo.on("invite:declined", (id, info) => {
-  console.log(`${id} declined invite to be ${info.role}`);
+mapeo.on("invite-declined", (info) => {
+  console.log(`${info.id} declined invite to be ${info.role}`);
 });
 ```
-
-**_TODO: what other things should be included in `info`?_**
