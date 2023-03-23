@@ -9,6 +9,7 @@
   - [`Project`](#project)
   - [`ProjectRole`](#projectrole)
   - [`ProjectMember`](#projectmember)
+  - [`CreatedInvite`](#createdinvite)
 
 - [Methods](#methods)
 
@@ -35,7 +36,7 @@ Exposes an interface for managing a projects' members and invites.
 
 ### `Project`
 
-Information about the current project. Could potentially look like:
+Information about the current project.
 
 ```ts
 type Project = {
@@ -48,7 +49,7 @@ type Project = {
 
 ### `ProjectRole`
 
-Information about the project role for a member. Could potentially look like:
+Information about the project role for a member.
 
 ```ts
 type ProjectRole = "creator" | "coordinator" | "member";
@@ -58,13 +59,28 @@ type ProjectRole = "creator" | "coordinator" | "member";
 
 ### `ProjectMember`
 
-A member that is part of the project. Could potentially look like:
+A member that is part of the project.
 
 ```ts
 type ProjectMember = {
   id: string;
-  name?: string;
+  name: string | null;
   role: ProjectRole;
+};
+```
+
+### `CreatedInvite`
+
+Information about an invite that has been created.
+
+```ts
+type CreatedInvite = {
+  id: string;
+  to: {
+    id: string;
+  };
+  role: ProjectRole;
+  status: "pending" | "accepted" | "declined" | "rescinded";
 };
 ```
 
@@ -172,7 +188,7 @@ Interface for managing project invites.
 
 `(id: string, role: ProjectRole) => Promise<void>`
 
-Invite a peer to join the project. Note that this adheres to a “fire-and-forget” strategy and should resolve when the invite is successfully _sent_. If you need to subscribe to when the invite is either accepted or declined, add an event listener for the `invite:accepted` or `invite:declined` events, respectively.
+Invite a peer to join the project. Note that this adheres to a “fire-and-forget” strategy and should resolve when the invite is successfully _sent_. If you need to subscribe to when the invite is either accepted or declined, use the `invite-accepted` or `invite-declined` events, respectively.
 
 ```ts
 await client.$project.invite.create("some-peer-id", "member");
@@ -184,7 +200,7 @@ await client.$project.invite.create("some-peer-id", "member");
 
 #### `invite.getMany`
 
-`(opts?: { pending?: boolean, accepted?: boolean, declined?: boolean }) => Promise<Invite[]>`
+`(opts?: { pending?: boolean, accepted?: boolean, declined?: boolean, rescinded?: boolean }) => Promise<CreatedInvite[]>`
 
 Get invites that have been created. Can use `opts` to filter the returned results based on their status. All opts are `true` by default.
 
@@ -196,6 +212,5 @@ await client.$project.invite.create("peer-c", "member");
 
 const invites = await client.$project.invite.getMany();
 
-// Assuming none of them have responded yet, outputs 3
-console.log(invites.length);
+console.log(invites.length); // logs 3
 ```
