@@ -9,7 +9,7 @@ Consolidated list of events that are emitted from the server and can be subscrib
 - [`'device:connect'`](#deviceconnect)
 - [`'device:disconnect'`](#devicedisconnect)
 - [`'device:info'`](#deviceinfo)
-- [`'device:sync'`](#sync)
+- [`'device:sync'`](#devicesync)
 - [`'discovery:start'`](#discoverystart)
 - [`'discovery:stop'`](#discoverystop)
 - [`'sync:start'`](#syncstart)
