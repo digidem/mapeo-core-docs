@@ -26,6 +26,7 @@
   - [`invite`](#invite)
 
     - [`invite.create`](#invitecreate)
+    - [`invite.get`](#inviteget)
     - [`invite.getMany`](#invitegetmany`)
 
 ## Description
@@ -186,17 +187,36 @@ Interface for managing project invites.
 
 #### `invite.create`
 
-`(id: string, role: ProjectRole) => Promise<void>`
+`(id: string, role: ProjectRole) => Promise<CreatedInvite>`
 
-Invite a peer to join the project. Note that this adheres to a “fire-and-forget” strategy and should resolve when the invite is successfully _sent_. If you need to subscribe to when the invite is either accepted or declined, use the `invite-accepted` or `invite-declined` events, respectively.
+Invite a peer to join the project. Note that this adheres to a “fire-and-forget” strategy and should resolve with the created invite when the invite is successfully _dispatched_. If you need to subscribe to when the invite is either accepted or declined, use the `invite-accepted` or `invite-declined` events, respectively.
 
 ```ts
-await client.$project.invite.create("some-peer-id", "member");
+const invite = await client.$project.invite.create("some-peer-id", "member");
 ```
 
 **_TODO: is fire-and-forget okay for this?_**
 
 **_TODO: anything besides role that needs to be added as param?_**
+
+### `invite.get`
+
+`(id: string) => Promie<CreatedInvite | null>`
+
+Get an invite with `id` that has been created.
+
+```ts
+// First create an invite
+const createdInvite = await client.$project.invite.create(
+  "some-peer-id",
+  "member"
+);
+
+// Then fetch the invite
+const invite = await client.$project.invite.get(createdInvite.id);
+
+console.assert(invite.id === createdInvite.id);
+```
 
 #### `invite.getMany`
 
