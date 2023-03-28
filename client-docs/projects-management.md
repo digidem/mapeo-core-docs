@@ -106,26 +106,30 @@ const deletedProject = await client.$projectsManagement.delete(project.id);
 
 #### `invite.accept`
 
-`(id: string, params: { projectKey: string }) => Promise<void>`
+`(id: string, params: {}) => Promise<void>`
 
 Accept an invite received from another peer.
 
 ```ts
 client.on('invite-received', (invite) => {
   // In reality, probably would perform logic to check it
-  client.$projectsManagement.invite.accept(invite.id, { projectKey: ... })
+  client.$projectsManagement.invite.accept(invite.id, { ... })
 })
 ```
 
+**_TODO: What does `params` look like?_**
+
 #### `invite.decline`
 
-`(id: string, params: { projectKey: string }) => Promise<void>`
+`(id: string, params: {}) => Promise<void>`
 
 Decline an invite received from another peer.
 
 ```ts
 client.on('invite-received', (invite) => {
   // In reality, probably would perform logic to check it
-  client.$projectsManagement.invite.decline(invite.id, { projectKey: ... })
+  client.$projectsManagement.invite.decline(invite.id, { ... })
 })
 ```
+
+**_TODO: What does `params` look like?_**
