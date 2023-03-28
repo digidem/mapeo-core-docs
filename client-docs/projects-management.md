@@ -68,19 +68,17 @@ const projects = await client.$projectsManagement.getMany();
 
 ### `create`
 
-`(opts?: {}) => Promise<Project>`
+`(opts: { name: string }) => Promise<Project>`
 
 Create a project.
 
 ```ts
-const project = await client.$projectsManagement.create({...});
+const project = await client.$projectsManagement.create({ name: "mapeo" });
 ```
-
-**_TODO: What does `opts` look like?_**
 
 ### `update`
 
-`(projectId: string, newInfo: {}) => Promise<Project>`
+`(projectId: string, newInfo: { name: string }) => Promise<Project>`
 
 Update a project's information. Throws if caller does not have the proper permissions or if the project does not exist.
 
@@ -89,8 +87,6 @@ const project = await client.$projectsManagement.create({...});
 
 const updatedProject = await client.$projectsManagement.update(project.id, {...});
 ```
-
-**_TODO: What does `newInfo` look like?_**
 
 ### `delete`
 
@@ -110,30 +106,26 @@ const deletedProject = await client.$projectsManagement.delete(project.id);
 
 #### `invite.accept`
 
-`(id: string, params: {}) => Promise<void>`
+`(id: string, params: { projectKey: string }) => Promise<void>`
 
 Accept an invite received from another peer.
 
 ```ts
 client.on('invite-received', (invite) => {
   // In reality, probably would perform logic to check it
-  client.$projectsManagement.invite.accept(invite.id, {...})
+  client.$projectsManagement.invite.accept(invite.id, { projectKey: ... })
 })
 ```
 
-**_TODO: What does `params` look like?_**
-
 #### `invite.decline`
 
-`(id: string, params: {}) => Promise<void>`
+`(id: string, params: { projectKey: string }) => Promise<void>`
 
 Decline an invite received from another peer.
 
 ```ts
 client.on('invite-received', (invite) => {
   // In reality, probably would perform logic to check it
-  client.$projectsManagement.invite.decline(invite.id, {...})
+  client.$projectsManagement.invite.decline(invite.id, { projectKey: ... })
 })
 ```
-
-**_TODO: What does `params` look like?_**
