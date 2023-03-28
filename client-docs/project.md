@@ -127,20 +127,18 @@ const members = await client.$project.member.getMany();
 
 #### `member.add`
 
-`(id: string, info: {}) => Promise<ProjectMember>`
+`(id: string, info: { name?: string, role: ProjectRole }) => Promise<ProjectMember>`
 
 Add a member to the project. Throws if the member already exists or if the caller does not have the proper permissions. Resolves with the created member.
 
 ```ts
-const memberPublicKey = 'abc123'
-const memberInfo = {...}
-
-const member = await client.$project.member.add(memberPublicKey, memberInfo)
+const member = await client.$project.member.add("abc123", {
+  name: "andrew",
+  role: "member",
+});
 ```
 
 **_TODO: consolidate to single object param?_**
-
-**_TODO: what’s needed in `info`?_**
 
 **_TODO: should we not throw if member already exists?_**
 
@@ -160,26 +158,29 @@ await client.$project.member.remove(member.id)
 
 **_TODO: should we not throw if member not found?_**
 
-**_TODO: should we have a batch method for this?_**
-
 #### `member.update`
 
-`(id: string, info: { role: ProjectRole }) => Promise<ProjectMember>`
+`(id: string, info: { name?: string | null, role?: ProjectRole }) => Promise<ProjectMember>`
 
-Update info about a member. Throws if the member does not exist or if the caller does not have the proper privileges.
+Update info about a member. Update is done by merging `info` as opposed to setting. Throws if the member does not exist or if the caller does not have the proper permissions.
 
 ```ts
 // Add the member
-const member = await client.$project.member.add('abc123', {...})
+const member = await client.$project.member.add("abc123", {
+  name: "andrew",
+  role: "member",
+});
 
-// Update the member
-const updatedMember = await client.$project.member.update(member.id, {
-  ...member,
-  // Any relevant properties you want to update
-})
+// Update the member's role
+const memberWithUpdatedRole = await client.$project.member.update(member.id, {
+  role: "coordinator",
+});
+
+// Remove the member's name by explicitly using null
+const memberWithUpdatedName = await client.$project.member.update(member.id, {
+  name: null,
+});
 ```
-
-**_TODO: should this be limited to just updating role, or are there other things that could be updated?_**
 
 ### `invite`
 
