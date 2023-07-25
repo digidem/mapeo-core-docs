@@ -113,7 +113,7 @@ Reject an invitation that was received for the project associated with `projectI
 
 ##### `'invite-received'`
 
-`(invite: Invite) => void`
+`invite.addEventListener('invite-received', (invite: Invite) => void)`
 
 Emits when a device invites you to a project.
 
@@ -224,7 +224,7 @@ Note that there existing syncing processes with other peers happening, disabling
 
 ##### `'sync-state'`
 
-`(info: SyncInfo) => void`
+`$sync.addEventListener('sync-state', (info: SyncInfo) => void)`
 
 Emits when the discovery or sync strategy changes.
 
@@ -259,7 +259,7 @@ Remove a member from the project. Throws if the member does not exist or if the 
 
 ##### `'member-update'`
 
-`(member: Member) => void`
+`$member.addEventListener('member-update', (member: Member) => void)`
 
 Emits when a new device is added to the project or information about a project member is updated.
 
