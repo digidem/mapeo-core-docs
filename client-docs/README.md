@@ -11,7 +11,7 @@
   - [`client.invite`](#clientinvite)
     - [`invite.accept`](#inviteaccept)
     - [`invite.reject`](#invitereject)
-    - [Events](#events)
+    - Events
       - [`'invite-received'`](#invite-received)
 
 - [Project Client](#project-client)
@@ -24,13 +24,13 @@
     - [`$sync.setDiscovery`](#syncsetdiscovery)
     - [`$sync.setSync`](#syncsetsync)
     - [`$sync.stop`](#syncstop)
-    - [Events](#events-1)
+    - Events
       - [`'sync-state'`](#sync-state)
   - [`project.$member`](#projectmember)
     - [`$member.invite`](#memberinvite)
     - [`$member.update`](#memberupdate)
     - [`$member.remove`](#memberremove)
-    - [Events](#events-2)
+    - Events
       - [`'member-update'`](#member-update)
   - [`project.$blob`](#projectblob)
     - [`$blob.getUrl`](#blobgeturl)
@@ -75,7 +75,7 @@ type Invite = {
 
 `(opts: { name?: string }) => Promise<ProjectClient>`
 
-Create a new project instance. Returns a `ProjectClient` that exposes the [Project Client](#project-client) API.
+Create a new project instance. Resolves with a `ProjectClient` that exposes the [Project Client](#project-client) API.
 
 Accepts the following `opts`:
 
@@ -87,7 +87,7 @@ Accepts the following `opts`:
 
 Retrieve a project client instance. Returns a `ProjectClient` that exposes the [Project Client](#project-client) API for the desired project.
 
-### `client.listProjects()`
+### `client.listProjects`
 
 `() => Promise<Array<ProjectInfo>>`
 
@@ -95,7 +95,7 @@ Retrieve information about all projects.
 
 ### `client.invite`
 
-Namespace for managing project invites. Has an `EventEmitter`-like interface that can emit and subscribe to events.
+Namespace for managing project invites. Provides an event emitter-like interface so it can emit and subscribe to events.
 
 #### `invite.accept`
 
@@ -119,7 +119,7 @@ Emits when a device invites you to a project.
 
 ## Project Client
 
-Client interface for managing a project.
+Client interface for managing and interacting with a project. Built-in API methods and namespaces are prefixed with `$` to distinguish them from dynamic, application-specific namespaces that are created based on the [DataType](#datatype) API.
 
 ### Types
 
@@ -178,7 +178,7 @@ Get information about the project and its settings.
 
 ### `project.$updateProjectSettings`
 
-`(versionId: string | Array<string>) => Promise<ProjectInfo & ProjectSettings>`
+`(versionId: string | Array<string>, info: ProjectInfo) => Promise<ProjectInfo & ProjectSettings>`
 
 Update information about the project.
 
@@ -293,9 +293,7 @@ Get the http URL pointing to the desired blob. Note that this is _synchronous_ a
 
 A DataType represents application-specific data. Each DataType has a schema that it adheres to, which can be used on the application level as well as for querying purposes at the core level. This API provides a CRUD interface to manage and work with such data.
 
-For now, exposed DataTypes are determined by the server-implementation that uses Mapeo Core. In the future, we would like to support application-defined DataTypes to flexibly support a wide variety of applications.
-
-DataTypes are exposed on the client as project-specific fields that are not prefixed with $. For example, accessing the interface for an application-defined observation type uses something like `project.observation`. Provides an event emitter-like interface so it can emit and subscribe to events.
+DataTypes are exposed on the client as fields on the project client instance. These fields are not prefixed with `$`. For example, accessing the interface for an application-defined "observation" type would be done so using `project.observation`. DataTypes provide an event emitter-like interface so it can emit and subscribe to events.
 
 #### Types
 
