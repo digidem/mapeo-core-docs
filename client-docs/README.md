@@ -28,6 +28,8 @@
       - [`'sync-state'`](#sync-state)
   - [`project.$member`](#projectmember)
     - [`$member.invite`](#memberinvite)
+    - [`$member.getById`](#membergetbyid)
+    - [`$member.getMany`](#membergetmany)
     - [`$member.update`](#memberupdate)
     - [`$member.remove`](#memberremove)
     - Events
@@ -242,6 +244,18 @@ Accepts the following `opts`:
 
 - `role`: the role to grant for the invited device
 - `timeout`: the maximum amount of time in seconds to wait for a response.
+
+#### `$member.getById`
+
+`(deviceId: string) => Promise<Member>`
+
+Get the project member with the associated `deviceId`.
+
+#### `$member.getMany`
+
+`(opts: {}) => Promise<Array<Member>>`
+
+Get all project members.
 
 #### `$member.update`
 
