@@ -37,14 +37,14 @@
   - [`project.$blob`](#projectblob)
     - [`$blob.getUrl`](#blobgeturl)
     - [`$blob.create`](#blobcreate)
-  - [DataType](#datatype)
+  - [MapeoDoc](#mapeodoc)
     - [Types](#types-2)
-    - [`dataType.create`](#datatypecreate)
-    - [`dataType.getByDocId`](#datatypegetbydocid)
-    - [`dataType.getByVersionId`](#datatypegetbyversionid)
-    - [`dataType.getMany`](#datatypegetmany)
-    - [`dataType.update`](#datatypeupdate)
-    - [`dataType.delete`](#datatypedelete)
+    - [`mapeoDoc.create`](#mapeodoccreate)
+    - [`mapeoDoc.getByDocId`](#mapeodocgetbydocid)
+    - [`mapeoDoc.getByVersionId`](#mapeodocgetbyversionid)
+    - [`mapeoDoc.getMany`](#mapeotypegetmany)
+    - [`mapeoType.update`](#mapeodocupdate)
+    - [`mapeoDoc.delete`](#mapeodocdelete)
 
 ## Mapeo API Client
 
@@ -121,7 +121,7 @@ Emits when a device invites you to a project.
 
 ## Project Instance
 
-Client interface for managing and interacting with a project instance. Built-in API methods and namespaces are prefixed with `$` to distinguish them from dynamic, application-specific namespaces that are created based on the [DataType](#datatype) API.
+Client interface for managing and interacting with a project instance. Built-in API methods and namespaces are prefixed with `$` to distinguish them from dynamic, application-specific namespaces that are created based on the [MapeoDoc](#mapeodoc) API.
 
 ### Types
 
@@ -305,11 +305,11 @@ Accepts the following `metadata`:
 
 Get the http URL pointing to the desired blob. Note that this is _synchronous_ and returns the contructed URL.
 
-### DataType
+### MapeoDoc
 
-A DataType represents application-specific data. Each DataType has a schema that it adheres to, which can be used on the application level as well as for querying purposes at the core level. This API provides a CRUD interface to manage and work with such data.
+A MapeoDoc represents a record that is stored in the Mapeo database. Every MapeoDoc is made up of a set of "common" fields (i.e. defined for all docs, referred to as the MapeoCommon type) and application-specific fields defined by a MapeoValue type. Each MapeoValue has a schema that it adheres to, which can be used on the application level as well as for querying purposes at the core level. The MapeoDoc API provides a CRUD interface to manage and work with such data.
 
-DataTypes are exposed on the client as fields on the project client instance. These fields are not prefixed with `$`. For example, accessing the interface for an application-defined "observation" type would be done so using `project.observation`. DataTypes provide an event emitter-like interface so it can emit and subscribe to events.
+The MapeoDoc API for a MapeoValue is exposed on the client as fields on the project instance. These fields are not prefixed with `$`. For example, accessing the interface for an application-defined "observation" type would be done so using `project.observation`. MapeoDocs provide an event emitter-like interface so it can emit and subscribe to events.
 
 #### Types
 
@@ -319,46 +319,46 @@ import { Opaque } from "type-fest";
 type DocId = Opaque<string>;
 type VersionId = Opaque<string>;
 
-// Represents any application-specific key-value data associated with a DataType.
-// This can be updated in the database.
-type MapeoType = {
-  [key: string]: any;
-};
+type MapeoCommon = ReadOnly<{
+  docId: DocId;
+  versionId: VersionId;
+  schemaName: string;
+  createdAt: Date;
+  updatedAt: Date;
+  links: Array<VersionId>;
+  forks: Array<VersionId>;
+}>;
 
-type DataType<T extends MapeoType> = Readonly<
-  T & {
-    docId: DocId;
-    versionId: VersionId;
-    schemaName: string;
-    createdAt: Date;
-    updatedAt: Date;
-    links: Array<VersionId>;
-    forks: Array<VersionId>;
-  }
->;
+// Represents any application-specific key-value data associated with a MapeoDoc.
+// This can be updated in the database.
+type MapeoValue = ReadOnly<{
+  [key: string]: any;
+}>;
+
+type MapeoDoc = MapeoValue & MapeoCommon;
 ```
 
-#### `dataType.create`
+#### `mapeoDoc.create`
 
-`(value: MapeoType) => Promise<DataType<MapeoType>>`
+`(value: MapeoValue) => Promise<MapeoDoc>`
 
 Create a document with the associated `value`. Resolves with the Mapeo document containing information created upon saving to the database.
 
-#### `dataType.getByDocId`
+#### `mapeoDoc.getByDocId`
 
-`(docId: string) => Promise<DataType<MapeoType>>`
+`(docId: string) => Promise<MapeoDoc>`
 
 Get a document with the associated `docId`. Note that this will return the most recent version of a document, even if it has been deleted.
 
-#### `dataType.getByVersionId`
+#### `mapeoDoc.getByVersionId`
 
-`(versionId: string) => Promise<DataType<MapeoType> & { deleted?: true }>`
+`(versionId: string) => Promise<MapeoDoc & { deleted?: true }>`
 
 Get a document for its associated `versionId`. If this returns a deleted document, a `deleted` field with value `true` is present and the `updatedAt` field refers to the deletion date.
 
-#### `dataType.getMany`
+#### `mapeoDoc.getMany`
 
-`<Opts extends { includeDeleted?: boolean }>(opts?: Opts) => Promise<Array<Opts extends { includeDeleted: true } ? DataType<MapeoType> & { deleted?: true } : DataType<MapeoType>>>`
+`<Opts extends { includeDeleted?: boolean }>(opts?: Opts) => Promise<Array<Opts extends { includeDeleted: true } ? MapeoDoc & { deleted?: true } : MapeoDoc>>`
 
 Get many documents, sorted by `createdAt` descending (most recent documents first). If no matching documents exist, resolves with an empty array.
 
@@ -366,14 +366,14 @@ Accepts the following `opts`:
 
 - `includeDeleted` include deleted documents in the result. Defaults to `false`.
 
-#### `dataType.update`
+#### `mapeoDoc.update`
 
-`(versionId: VersionId | Array<VersionId>, value: MapeoType) => Promise<DataType<MapeoType>>`
+`(versionId: VersionId | Array<VersionId>, value: MapeoType) => Promise<MapeoDoc>`
 
 Update a document associated with `versionId` with a new `value`. If `versionId` is an array, it must have a length of at least 1. Throws if the document does not exist. Otherwise resolves with the updated document.
 
-#### `dataType.delete`
+#### `mapeoDoc.delete`
 
-`(versionId: VersionId | Array<VersionId>) => Promise<DataType<MapeoType> & { deleted: true }>`
+`(versionId: VersionId | Array<VersionId>) => Promise<MapeoDoc & { deleted: true }>`
 
 Delete a document that matches the specified `versionId`. If `versionId` is an array, it must have a length of at least 1. Throws if the document does not exist. Otherwise resolves with the deleted document.
