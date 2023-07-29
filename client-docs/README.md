@@ -2,7 +2,7 @@
 
 ## Table of Contents
 
-- [Top Level Client](#top-level-client)
+- [Mapeo API Client](#mapeo-api-client)
 
   - [Types](#types)
   - [`client.createProject`](#clientcreateproject)
@@ -46,7 +46,7 @@
     - [`dataType.update`](#datatypeupdate)
     - [`dataType.delete`](#datatypedelete)
 
-## Top Level Client
+## Mapeo API Client
 
 Client interface for managing projects and invites. Provides an event emitter-like interface so it can emit and subscribe to events.
 
