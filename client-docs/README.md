@@ -253,9 +253,11 @@ Get the project member with the associated `deviceId`.
 
 #### `$member.getMany`
 
-`(opts: {}) => Promise<Array<Member>>`
+`(opts?: { connectedOnly?: boolean }) => Promise<Array<Member>>`
 
-Get all project members.
+Get all project members. Accepts the following `opts`:
+
+- `connectedOnly`: Only return members that are connected. Defaults to `false`.
 
 #### `$member.update`
 
