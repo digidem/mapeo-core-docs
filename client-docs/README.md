@@ -58,7 +58,7 @@ import { Opaque } from "type-fest";
 type ProjectId = Opaque<string>;
 
 type ProjectInfo = {
-  id: ProjectId;
+  projectId: ProjectId;
   createdAt: Date;
   updatedAt: Date;
   name: string;
