@@ -14,7 +14,7 @@
     - Events
       - [`'invite-received'`](#invite-received)
 
-- [Project Client](#project-client)
+- [Project Instance](#project-instance)
   - [Types](#types-1)
   - [`project.$getProjectSettings`](#projectgetprojectsettings)
   - [`project.$updateProjectSettings`](#projectupdateprojectsettings)
@@ -75,9 +75,9 @@ type Invite = {
 
 ### `client.createProject`
 
-`(opts: { name?: string }) => Promise<ProjectClient>`
+`(opts: { name?: string }) => Promise<MapeoProject>`
 
-Create a new project instance. Resolves with a `ProjectClient` that exposes the [Project Client](#project-client) API.
+Create a new project instance. Resolves with a `MapeoProject` that exposes the [Project Instance](#project-instance) API.
 
 Accepts the following `opts`:
 
@@ -85,9 +85,9 @@ Accepts the following `opts`:
 
 ### `client.getProject`
 
-`(projectId: string) => Promise<ProjectClient>`
+`(projectId: string) => Promise<MapeoProject>`
 
-Retrieve a project client instance. Returns a `ProjectClient` that exposes the [Project Client](#project-client) API for the desired project.
+Retrieve a project client instance. Returns a `MapeoProject` that exposes the [Project Instance](#project-instance) API for the desired project.
 
 ### `client.listProjects`
 
@@ -101,7 +101,7 @@ Namespace for managing project invites. Provides an event emitter-like interface
 
 #### `invite.accept`
 
-`(projectId: string) => Promise<ProjectClient>`
+`(projectId: string) => Promise<MapeoProject>`
 
 Accept an invitation that was received for the project associated with `projectId`.
 
@@ -119,9 +119,9 @@ Reject an invitation that was received for the project associated with `projectI
 
 Emits when a device invites you to a project.
 
-## Project Client
+## Project Instance
 
-Client interface for managing and interacting with a project. Built-in API methods and namespaces are prefixed with `$` to distinguish them from dynamic, application-specific namespaces that are created based on the [DataType](#datatype) API.
+Client interface for managing and interacting with a project instance. Built-in API methods and namespaces are prefixed with `$` to distinguish them from dynamic, application-specific namespaces that are created based on the [DataType](#datatype) API.
 
 ### Types
 
