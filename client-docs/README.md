@@ -297,7 +297,7 @@ Namespace for creating blobs and getting blob info. Provides an event emitter-li
 
 ##### `$blob.create()`
 
-`(filePaths: { original: string, preview?: string, thumbnail?: string }, metadata: { mimeType: string }) => Promise<BlobId>`
+`(filePaths: { original: string, preview?: string, thumbnail?: string }, metadata?: { mimeType?: string }) => Promise<BlobId>`
 
 Create a blob. Resolves with information about the blob that is created.
 
