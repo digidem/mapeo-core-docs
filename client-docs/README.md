@@ -46,7 +46,7 @@
       - [`mapeoDoc.create()`](#mapeodoccreate)
       - [`mapeoDoc.getByDocId()`](#mapeodocgetbydocid)
       - [`mapeoDoc.getByVersionId()`](#mapeodocgetbyversionid)
-      - [`mapeoDoc.getMany()`](#mapeotypegetmany)
+      - [`mapeoDoc.getMany()`](#mapeodocgetmany)
       - [`mapeoType.update()`](#mapeodocupdate)
       - [`mapeoDoc.delete()`](#mapeodocdelete)
 
