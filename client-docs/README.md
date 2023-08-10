@@ -322,7 +322,7 @@ Accepts the following `metadata`:
 
 `(blobId: BlobId) => string`
 
-Get the http URL pointing to the desired blob. Note that this is _synchronous_ and returns the contructed URL.
+Get the http URL pointing to the desired blob. Note that this is _synchronous_ and returns the constructed URL.
 
 #### MapeoDoc
 
