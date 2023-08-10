@@ -8,6 +8,7 @@
   - [Methods](#methods)
   - [`client.createProject()`](#clientcreateproject)
   - [`client.getProject()`](#clientgetproject)
+  - [`client.addProject()`](#clientaddProject)
   - [`client.listProjects()`](#clientlistprojects)
   - [Properties](#properties)
     - [`client.invite`](#clientinvite)
@@ -94,6 +95,12 @@ Accepts the following `opts`:
 `(projectId: string) => Promise<MapeoProject>`
 
 Retrieve a project client instance. Returns a `MapeoProject` that exposes the [Project Instance](#project-instance) API for the desired project.
+
+#### `client.addProject()`
+
+`(projectId: string) => Promise<MapeoProject>`
+
+Add an existing project. Returns a `MapeoProject` that exposes the [Project Instance](#project-instance) API for the desired project.
 
 #### `client.listProjects()`
 
