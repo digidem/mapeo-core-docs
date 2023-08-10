@@ -320,9 +320,9 @@ Accepts the following `metadata`:
 
 ##### `$blob.getUrl()`
 
-`(blobId: BlobId) => string`
+`(blobId: BlobId) => Promise<string>`
 
-Get the http URL pointing to the desired blob. Note that this is _synchronous_ and returns the constructed URL.
+Get the http URL pointing to the desired blob.
 
 #### MapeoDoc
 
