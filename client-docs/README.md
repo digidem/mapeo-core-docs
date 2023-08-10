@@ -14,7 +14,7 @@
       - [`invite.accept()`](#inviteaccept)
       - [`invite.reject()`](#invitereject)
       - Events
-        - [`'invite-received()'`](#invite-received)
+        - [`'invite-received'`](#invite-received)
 
 - [Project Instance](#project-instance)
   - [Types](#types-1)
