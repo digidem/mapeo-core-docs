@@ -82,9 +82,9 @@ type Invite = {
 
 #### `client.createProject()`
 
-`(opts: { name?: string }) => Promise<MapeoProject>`
+`(opts: { name?: string }) => Promise<ProjectId>`
 
-Create a new project instance. Resolves with a `MapeoProject` that exposes the [Project Instance](#project-instance) API.
+Create a new project. Resolves with the `ProjectId` of the created project.
 
 Accepts the following `opts`:
 
