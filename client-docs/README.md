@@ -21,7 +21,7 @@
   - [Types](#types-1)
   - [Methods](#methods-1)
     - [`project.$getProjectSettings()`](#projectgetprojectsettings)
-    - [`project.$updateProjectSettings()`](#projectupdateprojectsettings)
+    - [`project.$setProjectSettings()`](#projectsetprojectsettings)
     - [`project.$leave()`](#projectleave)
   - [Properties](#properties-1)
     - [`project.$sync`](#projectsync)
@@ -66,7 +66,6 @@ type ProjectInfo = {
   projectId: ProjectId;
   createdAt: Date;
   updatedAt: Date;
-  name: string;
 };
 
 type ProjectRole = "creator" | "coordinator" | "member";
@@ -104,7 +103,7 @@ Add an existing project. Returns a `MapeoProject` that exposes the [Project Inst
 
 #### `client.listProjects()`
 
-`() => Promise<Array<ProjectInfo>>`
+`() => Promise<Array<ProjectInfo & ProjectSettings>>`
 
 Retrieve information about all projects.
 
@@ -144,7 +143,7 @@ Client interface for managing and interacting with a project instance. Built-in 
 import { Opaque } from "type-fest";
 
 type ProjectSettings = {
-  // TODO
+  name?: string;
 };
 
 type VersionId = Opaque<string>;
@@ -195,11 +194,11 @@ type BlobId =
 
 Get information about the project and its settings.
 
-#### `project.$updateProjectSettings()`
+#### `project.$setProjectSettings()`
 
-`(versionId: string | Array<string>, info: ProjectInfo) => Promise<ProjectInfo & ProjectSettings>`
+`(settings: ProjectSettings, versionId?: string | Array<string>, ) => Promise<ProjectInfo & ProjectSettings>`
 
-Update information about the project.
+Set information about the project.
 
 #### `project.$leave()`
 
