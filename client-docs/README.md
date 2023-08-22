@@ -196,7 +196,7 @@ Get information about the project and its settings.
 
 #### `project.$setProjectSettings()`
 
-`(settings: ProjectSettings, versionId?: string | Array<string>, ) => Promise<ProjectInfo & ProjectSettings>`
+`(settings: ProjectSettings) => Promise<ProjectInfo & ProjectSettings>`
 
 Set information about the project.
 
