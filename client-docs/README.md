@@ -10,6 +10,9 @@
   - [`client.getProject()`](#clientgetproject)
   - [`client.addProject()`](#clientaddProject)
   - [`client.listProjects()`](#clientlistprojects)
+  - [`client.listLocalPeers()`](#clientlistlocalpeers)
+  - Events
+    - [`'local-peers'`](#local-peers)
   - [Properties](#properties)
     - [`client.invite`](#clientinvite)
       - [`invite.accept()`](#inviteaccept)
@@ -106,6 +109,18 @@ Add an existing project. Returns a `MapeoProject` that exposes the [Project Inst
 `() => Promise<Array<ProjectInfo & ProjectSettings>>`
 
 Retrieve information about all projects.
+
+#### `client.listLocalPeers()`
+
+`() => Promise<Array<{ peerId: string, name?: string, connected: boolean }>>`
+
+Retrieve a list of locally discovered peers, includes peers that are and are not members of the same projects as the device. Peers that have been previously connected but then disconnected are still returned, with `connected: false`.
+
+### Events
+
+#### `'local-peers'`
+
+Emits when the list of local peers updates (new peers are discovered, or a peer's connection status changes)
 
 ### Properties
 
