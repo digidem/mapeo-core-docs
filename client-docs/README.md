@@ -29,9 +29,9 @@
   - [Properties](#properties-1)
     - [`project.$sync`](#projectsync)
       - [`$sync.getState()`](#syncgetstate)
-      - [`$sync.setDiscovery()`](#syncsetdiscovery)
-      - [`$sync.setSync()`](#syncsetsync)
+      - [`$sync.start()`](#syncstart)
       - [`$sync.stop()`](#syncstop)
+      - [`$sync.waitForSync()`](#syncwaitforsync)
       - Events
         - [`'sync-state'`](#sync-state)
     - [`project.$member`](#projectmember)
@@ -163,11 +163,28 @@ type ProjectSettings = {
 
 type VersionId = Opaque<string>;
 
-type ConnectionType = "lan" | "internet";
+type PartialSyncState = {
+  /** Number of blocks we have locally */
+  have: number,
+  /** Number of blocks we want from connected peers */
+  want: number,
+  /** Number of blocks that connected peers want from us */
+  wanted: number,
+  /** Number of blocks missing (we don't have them, but connected peers don't have them either) */
+  missing: number,
+  /** Is there data available to sync? (want > 0 || wanted > 0) */
+  dataToSync: boolean,
+  /** Are we currently syncing? */
+  syncing: boolean,
+}
 
-type SyncInfo = {
-  discovery: ConnectionType[];
-  sync: ConnectionType[];
+type SyncState = {
+  /** State of initial sync (sync of auth, metadata and project config) */
+  initial: PartialSyncState,
+  /** State of data sync (observations, map data, photos, audio, video etc.) */
+  data: PartialSyncState,
+  /** Number of connected peers */
+  connectedPeers: number
 };
 
 type Member = {
@@ -225,43 +242,38 @@ Leave the project.
 
 #### `project.$sync`
 
-Namespace for getting information about sync and managing sync strategy.
+Namespace for getting information about sync and managing sync strategy. Mapeo will automatically connect to local peers (peers that are discoverable on the local network) and will automatically sync project metadata (project member authentication, project config and metadata about how much data needs to be synced), which we call 'initial' sync. Data sync (observations, map data, photos, audio, video etc.) is disabled by default. To enable data sync, call `start()`. Provides an event emitter-like interface so it can emit and subscribe to events.
 
 ##### `$sync.getState()`
 
-`() => Promise<SyncInfo>`
+`() => Promise<SyncState>`
 
-Get information about discovery and sync connection types that are enabled.
+Get current state of sync with connected peers. The sync state is divided into 'initial' sync and 'data' sync. Initial sync refers to the sync of auth, metadata and project config. Data sync refers to the sync of observations, map data, photos, audio, video etc. The sync state is further divided into 'have', 'want', 'wanted' and 'missing' blocks. `have` is the number of blocks we have locally. `want` is the number of blocks we want from connected peers. `wanted` is the number of blocks that connected peers want from us. `missing` is the number of blocks that we don't have, but connected peers don't have either. `dataToSync` refers to whether there is data available to sync (want > 0 || wanted > 0). `syncing` refers to whether we are currently syncing this subset of data (initial metadata or data).
 
-##### `$sync.setDiscovery()`
+##### `$sync.start()`
 
-`(connectionTypes: ConnectionType[] | null) => Promise<void>`
+`() => Promise<void>`
 
-Set the discovery connection types to enable. If `setDiscovery` has not been previously called with a valid connection type, discovery becomes enabled. If `connectionTypes` is `null` or `[]`, discovery becomes disabled. Do not rely on the resolving of this method to know when the process starts or stops. Instead, listen to the [`'sync-state'`](#sync-state) event on `$sync`.
-
-Note that turning off discovery does not stop existing connections, it only stops the device from searching for and connecting to new devices.
+Start data sync (observations, map data and media). If data sync is already enabled, this is a no-op. Do not rely on the resolving of this method to know when the process starts. Instead, listen to the [`'sync-state'`](#sync-state) event.
 
 ##### `$sync.stop()`
 
-_Not implemented_
+Stop data sync (observations, map data and media). Syncing of metadata (project member authentication, project config and metadata about how much data needs to be synced) will continue in the background. Listen to the [`'sync-state'`](#sync-state) event to know when additional data is available to sync.
 
-Force stop discovery and sync.
+##### `$sync.waitForSync(type)`
 
-##### `$sync.setSync()`
+`(type: 'initial' | 'data') => Promise<void>`
 
-`(connectionTypes: ConnectionType[] | null) => Promise<void>`
+Wait for sync to complete for the specified `type`. If `type` is `'initial'`, this will wait for initial sync (sync of auth, metadata and project config) to complete. If `type` is `'data'`, this will wait for data sync (observations, map data and media) to complete. It will resolve when the sync is complete. Note that if additional peers connect or if connected peers add new data after this has resolved, then there will still be data to sync. To watch for changes subscribe to the `sync-state` event (see below).
 
-Set the sync connection types to enable. If `setSync` has not been previously called with a valid connection type, sync becomes enabled. If `connectionTypes` is `null` or `[]`, sync becomes disabled. Do not rely on the resolving of this method to know when the process starts or stops. Instead, listen to the [`'sync-state'`](#sync-state) event.
-
-Note that there existing syncing processes with other peers happening, disabling sync does not close these immediately. The server will attempt to gracefully finish or close them and eventually emit the appropriate [`'sync-state'`](#sync-state) event.
 
 ##### Events
 
 ###### `'sync-state'`
 
-`$sync.addEventListener('sync-state', (info: SyncInfo) => void)`
+`$sync.addEventListener('sync-state', (state: SyncState) => void)`
 
-Emits when the discovery or sync strategy changes.
+Emits when sync state changes (e.g. number of blocks we have, want, are wanted or missing changes, or when we connect to a new peer or a peer disconnects). See the [type definition](#types-1) for more information about the sync state.
 
 #### `project.$member`
 
