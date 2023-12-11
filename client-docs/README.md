@@ -29,7 +29,7 @@
   - [Properties](#properties-1)
     - [`project.$sync`](#projectsync)
       - [`$sync.getState()`](#syncgetstate)
-      - [`$sync.start()`](#syncsetsync)
+      - [`$sync.start()`](#syncstart)
       - [`$sync.stop()`](#syncstop)
       - [`$sync.waitForSync()`](#syncwaitforsync)
       - Events
