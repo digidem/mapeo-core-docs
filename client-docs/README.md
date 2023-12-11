@@ -258,7 +258,7 @@ Start data sync (observations, map data and media). If data sync is already enab
 
 ##### `$sync.stop()`
 
-Stop data sync (observations, map data and media). Syncing of metadata (project member authentication, project config and metadata about how much data needs to be synced) will continue in the background. Listen to the [`'sync-state'`](#sync-state) event to know when additional data is avialable to sync.
+Stop data sync (observations, map data and media). Syncing of metadata (project member authentication, project config and metadata about how much data needs to be synced) will continue in the background. Listen to the [`'sync-state'`](#sync-state) event to know when additional data is available to sync.
 
 ##### `$sync.waitForSync(type)`
 
