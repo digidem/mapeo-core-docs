@@ -2,24 +2,27 @@
 
 ## Table of Contents
 
+- [Table of Contents](#table-of-contents)
 - [Mapeo API Client](#mapeo-api-client)
-
   - [Types](#types)
   - [Methods](#methods)
-  - [`client.createProject()`](#clientcreateproject)
-  - [`client.getProject()`](#clientgetproject)
-  - [`client.addProject()`](#clientaddProject)
-  - [`client.listProjects()`](#clientlistprojects)
-  - [`client.listLocalPeers()`](#clientlistlocalpeers)
-  - Events
+    - [`client.createProject()`](#clientcreateproject)
+    - [`client.getProject()`](#clientgetproject)
+    - [`client.addProject()`](#clientaddproject)
+    - [`client.listProjects()`](#clientlistprojects)
+    - [`client.listLocalPeers()`](#clientlistlocalpeers)
+    - [`client.startLocalPeerDiscovery()`](#clientstartlocalpeerdiscovery)
+    - [`client.stopLocalPeerDiscovery(opts)`](#clientstoplocalpeerdiscoveryopts)
+    - [`client.startMediaServer(opts)`](#clientstartmediaserveropts)
+    - [`client.stopMediaServer()`](#clientstopmediaserver)
+  - [Events](#events)
     - [`'local-peers'`](#local-peers)
   - [Properties](#properties)
     - [`client.invite`](#clientinvite)
       - [`invite.accept()`](#inviteaccept)
       - [`invite.reject()`](#invitereject)
-      - Events
+      - [Events](#events-1)
         - [`'invite-received'`](#invite-received)
-
 - [Project Instance](#project-instance)
   - [Types](#types-1)
   - [Methods](#methods-1)
@@ -31,8 +34,8 @@
       - [`$sync.getState()`](#syncgetstate)
       - [`$sync.start()`](#syncstart)
       - [`$sync.stop()`](#syncstop)
-      - [`$sync.waitForSync()`](#syncwaitforsync)
-      - Events
+      - [`$sync.waitForSync(type)`](#syncwaitforsynctype)
+      - [Events](#events-2)
         - [`'sync-state'`](#sync-state)
     - [`project.$member`](#projectmember)
       - [`$member.invite()`](#memberinvite)
@@ -40,18 +43,18 @@
       - [`$member.getMany()`](#membergetmany)
       - [`$member.update()`](#memberupdate)
       - [`$member.remove()`](#memberremove)
-      - Events
+      - [Events](#events-3)
         - [`'member-update'`](#member-update)
     - [`project.$blob`](#projectblob)
-      - [`$blob.getUrl()`](#blobgeturl)
       - [`$blob.create()`](#blobcreate)
+      - [`$blob.getUrl()`](#blobgeturl)
     - [MapeoDoc](#mapeodoc)
       - [Types](#types-2)
       - [`mapeoDoc.create()`](#mapeodoccreate)
       - [`mapeoDoc.getByDocId()`](#mapeodocgetbydocid)
       - [`mapeoDoc.getByVersionId()`](#mapeodocgetbyversionid)
       - [`mapeoDoc.getMany()`](#mapeodocgetmany)
-      - [`mapeoType.update()`](#mapeodocupdate)
+      - [`mapeoDoc.update()`](#mapeodocupdate)
       - [`mapeoDoc.delete()`](#mapeodocdelete)
 
 ## Mapeo API Client
@@ -115,6 +118,36 @@ Retrieve information about all projects.
 `() => Promise<Array<{ peerId: string, name?: string, connected: boolean }>>`
 
 Retrieve a list of locally discovered peers, includes peers that are and are not members of the same projects as the device. Peers that have been previously connected but then disconnected are still returned, with `connected: false`.
+
+#### `client.startLocalPeerDiscovery()`
+
+`() => Promise<void>`
+
+Start local peer discovery (advertises via multicast DNS and listens for other peers on the local network). Does nothing if discovery is already started. Will auto-connect and start initial sync with any discovered peers that are members of the same projects as the device.
+
+This should be called when a device connects to a wifi network or when the app is opened and the device is connected to a wifi network. Discovery should be stopped when the app is closed or put into the background.
+
+#### `client.stopLocalPeerDiscovery(opts)`
+
+`({ force?: boolean, timeout?: number }) => Promise<void>`
+
+Close all servers and stop multicast DNS advertising and browsing. Will wait for open connections to other peers to close, unless `opts.force=true` (default `false`) in which case open connections are force-closed after `opts.timeout` milliseconds (default `0` e.g. immediately disconnect peers).
+
+This should be called when the app is closed or put into the background, or when the device disconnects from a wifi network.
+
+#### `client.startMediaServer(opts)`
+
+`({ port?: number, host?: string }) => Promise<void>`
+
+Start the mapeo media server that serves project media (photos, video, audio) and icons over http. This generally should not need to be called by the front-end on mobile, since this is called by the backend whenever the app comes into the foreground.
+
+`port` defaults to `0` (choose the first available port) and `host` defaults to `127.0.0.1` (listen only to the loopback interface on ip4 for local connections). To listen for connections from the local network set `host` to `0.0.0.0`.
+
+#### `client.stopMediaServer()`
+
+`() => Promise<void>`
+
+Stop the mapeo media server. This generally should not need to be called by the front-end on mobile, since this is called by the backend whenever the app goes into the background.
 
 ### Events
 
