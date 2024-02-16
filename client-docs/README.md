@@ -19,7 +19,7 @@
     - [`'local-peers'`](#local-peers)
   - [Properties](#properties)
     - [`client.invite`](#clientinvite)
-      - [`invite.getPending`](#invitegetpending)
+      - [`invite.getPending()`](#invitegetpending)
       - [`invite.accept()`](#inviteaccept)
       - [`invite.reject()`](#invitereject)
       - [Events](#events-1)
@@ -41,6 +41,7 @@
         - [`'sync-state'`](#sync-state)
     - [`project.$member`](#projectmember)
       - [`$member.invite()`](#memberinvite)
+      - [`$member.cancelInvite()`](#membercancelinvite)
       - [`$member.getById()`](#membergetbyid)
       - [`$member.getMany()`](#membergetmany)
       - [`$member.update()`](#memberupdate)
@@ -84,6 +85,7 @@ type PendingInvite = {
   roleName: string;
   roleDescription: string;
   invitorName?: string;
+  timeOfInvite: Date;
 };
 ```
 
@@ -181,7 +183,7 @@ Accept an invitation that was received using the `inviteId`. Returns the `MapeoP
 
 `(inviteId: PendingInvite['inviteId']) => Promise<void>`
 
-Rejects an invitation that was received for the project associated with `projectId`.
+Rejects an invitation that was received using the `inviteId.
 
 ##### Events
 
