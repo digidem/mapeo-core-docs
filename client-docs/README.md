@@ -19,10 +19,12 @@
     - [`'local-peers'`](#local-peers)
   - [Properties](#properties)
     - [`client.invite`](#clientinvite)
+      - [`invite.getPending`](#invitegetpending)
       - [`invite.accept()`](#inviteaccept)
       - [`invite.reject()`](#invitereject)
       - [Events](#events-1)
         - [`'invite-received'`](#invite-received)
+        - [`'invite-removed'`](#invite-removed)
 - [Project Instance](#project-instance)
   - [Types](#types-1)
   - [Methods](#methods-1)
@@ -76,10 +78,12 @@ type ProjectInfo = {
 
 type ProjectRole = "creator" | "coordinator" | "member";
 
-type Invite = {
-  projectId: ProjectId;
+type PendingInvite = {
+  inviteId: string;
   projectName: string;
-  role: ProjectRole;
+  roleName: string;
+  roleDescription: string;
+  invitorName?: string;
 };
 ```
 
@@ -161,25 +165,37 @@ Emits when the list of local peers updates (new peers are discovered, or a peer'
 
 Namespace for managing project invites. Provides an event emitter-like interface so it can emit and subscribe to events.
 
+##### `invite.getPending`
+
+`() => Promise<PendingInvite[]>`
+
+Returns a list of pending invites.
+
 ##### `invite.accept()`
 
-`(projectId: string) => Promise<MapeoProject>`
+`(inviteId: PendingInvite['inviteId']) => Promise<MapeoProject>`
 
-Accept an invitation that was received for the project associated with `projectId`.
+Accept an invitation that was received using the `inviteId`. Returns the `MapeoProject` that has just been joined by accepting the invite.
 
 ##### `invite.reject()`
 
-`(projectId: string) => Promise<void>`
+`(inviteId: PendingInvite['inviteId']) => Promise<void>`
 
-Reject an invitation that was received for the project associated with `projectId`.
+Rejects an invitation that was received for the project associated with `projectId`.
 
 ##### Events
 
 ###### `'invite-received'`
 
-`invite.addEventListener('invite-received', (invite: Invite) => void)`
+`invite.addEventListener('invite-received', (invite: PendingInvite) => void)`
 
 Emits when a device invites you to a project.
+
+###### `'invite-removed`
+
+`invite.addEventListener('invite-received', (inviteWithReason: PendingInvite & {reason:'cancelledByInvitor' | 'rejectedByInvitee'}) => void)`
+
+Emits when a device is removed from the list of pending invites. This can happen when the invitee [rejects](#invitereject) an invite or when the invitor [cancels](#membercancelinvite) an invite.
 
 ## Project Instance
 
@@ -198,26 +214,26 @@ type VersionId = Opaque<string>;
 
 type PartialSyncState = {
   /** Number of blocks we have locally */
-  have: number,
+  have: number;
   /** Number of blocks we want from connected peers */
-  want: number,
+  want: number;
   /** Number of blocks that connected peers want from us */
-  wanted: number,
+  wanted: number;
   /** Number of blocks missing (we don't have them, but connected peers don't have them either) */
-  missing: number,
+  missing: number;
   /** Is there data available to sync? (want > 0 || wanted > 0) */
-  dataToSync: boolean,
+  dataToSync: boolean;
   /** Are we currently syncing? */
-  syncing: boolean,
-}
+  syncing: boolean;
+};
 
 type SyncState = {
   /** State of initial sync (sync of auth, metadata and project config) */
-  initial: PartialSyncState,
+  initial: PartialSyncState;
   /** State of data sync (observations, map data, photos, audio, video etc.) */
-  data: PartialSyncState,
+  data: PartialSyncState;
   /** Number of connected peers */
-  connectedPeers: number
+  connectedPeers: number;
 };
 
 type Member = {
@@ -299,7 +315,6 @@ Stop data sync (observations, map data and media). Syncing of metadata (project 
 
 Wait for sync to complete for the specified `type`. If `type` is `'initial'`, this will wait for initial sync (sync of auth, metadata and project config) to complete. If `type` is `'data'`, this will wait for data sync (observations, map data and media) to complete. It will resolve when the sync is complete. Note that if additional peers connect or if connected peers add new data after this has resolved, then there will still be data to sync. To watch for changes subscribe to the `sync-state` event (see below).
 
-
 ##### Events
 
 ###### `'sync-state'`
@@ -322,6 +337,14 @@ Accepts the following `opts`:
 
 - `role`: the role to grant for the invited device
 - `timeout`: the maximum amount of time in seconds to wait for a response.
+
+<!-- Should this return something? -->
+
+##### `$member.cancelInvite()`
+
+`(deviceId:string) => Promise<void>`
+
+Cancels an invite sent through [member.invite()](#memberinvite). This does not guarantee that the invite was cancelled as the invitee may accept the invite before the cancelInvite is evoked.
 
 ##### `$member.getById()`
 
