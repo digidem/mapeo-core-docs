@@ -87,13 +87,14 @@ type Invite = {
 
 #### `client.createProject()`
 
-`(opts: { name?: string }) => Promise<ProjectId>`
+`(opts: { name?: string, configPath?: string }) => Promise<ProjectId>`
 
 Create a new project. Resolves with the `ProjectId` of the created project.
 
 Accepts the following `opts`:
 
 - `name`: the name of the project
+- `configPath`: the path to the config to import at project creation time
 
 #### `client.getProject()`
 
